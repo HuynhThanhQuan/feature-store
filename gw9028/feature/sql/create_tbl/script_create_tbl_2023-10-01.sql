@@ -16,7 +16,7 @@ JOIN
         (SELECT DISTINCT customer_cde 
          FROM dw_analytics.dw_cust_product_loc_fct
          WHERE CUST_STATUS = 'HOAT DONG' 
-             AND PROCESS_DT = TO_DATE('{RPT_DT}','DD-MM-YYYY')) B 
+             AND PROCESS_DT = TO_DATE('2023-10-01','DD-MM-YYYY')) B 
 ON A.CUSTOMER_CDE = B.CUSTOMER_CDE;
 
  
@@ -52,6 +52,7 @@ FROM
     ) 
 WHERE RN = 1;
 
+
 -- This query creates a temporary table called CINS_TMP_CREDIT_CARD_TRANSACTION that contains credit card transaction data.
 -- The data is selected from the DW_ANALYTICS.DW_CARD_TRANSACTION_FCT table based on the following criteria:
 -- 1. The transaction date is within the last 36 months from the report date specified by the user
@@ -75,6 +76,7 @@ WHERE RN = 1;
 -- 12. MCC code
 -- 13. Transaction offline code
 -- 14. Fee amount
+
 CREATE TABLE CINS_TMP_CREDIT_CARD_TRANSACTION AS 
 SELECT CUSTOMER_CDE
     , PROCESS_DT
@@ -90,11 +92,11 @@ SELECT CUSTOMER_CDE
     , MCC_CDE
     , TXN_OM_CDE
     , AMT_FEE
-FROM
-    (SELECT A.*
+FROM (
+    SELECT A.*
         , ROW_NUMBER() OVER (PARTITION BY CUSTOMER_CDE, CARD_CDE, PROCESS_DT, APPROVAL_CDE, RETRVL_REFNO ORDER BY NULL) RN
-    FROM
-        (SELECT T.CUSTOMER_CDE
+    FROM (
+        SELECT T.CUSTOMER_CDE
             , T.CARD_CDE
             , T.PROCESS_DT
             , T.APPROVAL_CDE
@@ -111,15 +113,15 @@ FROM
             , T.AMT_FEE
         FROM DW_ANALYTICS.DW_CARD_TRANSACTION_FCT T
         JOIN CINS_TMP_CUST C ON T.CUSTOMER_CDE=C.CUSTOMER_CDE
-        WHERE T.PROCESS_DT >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)
-            AND T.PROCESS_DT <= TO_DATE('{RPT_DT}', 'DD-MM-YY')
+        WHERE T.PROCESS_DT >= ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -36)
+            AND T.PROCESS_DT <= TO_DATE('2023-10-01', 'DD-MM-YY')
             AND T.CARD_CDE LIKE '3%'
             AND T.TRAN_STATUS = 'S'
             AND REGEXP_LIKE(T.TXN_OL_CDE, '^[A-Z]$')
             AND T.COMPANY_KEY = 1
             AND T.SUB_SECTOR_CDE IN ('1700', '1602')
-        ) A
-    )
+    ) A
+)
 WHERE RN = 1;
 
 
@@ -145,12 +147,12 @@ FROM
     FROM DW_ANALYTICS.DW_CUST_PRODUCT_LOC_FCT T
     JOIN CINS_TMP_CUST C
         ON T.CUSTOMER_CDE=C.CUSTOMER_CDE
-    WHERE T.PROCESS_DT = ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -1)
-        OR T.PROCESS_DT = TO_DATE('{RPT_DT}', 'DD-MM-YY')
+    WHERE T.PROCESS_DT = ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -1)
+        OR T.PROCESS_DT = TO_DATE('2023-10-01', 'DD-MM-YY')
     GROUP BY T.CUSTOMER_CDE, T.PROCESS_DT
     ) A;
 
--- This query creates a temporary table called CINS_TMP_DATA_RPT_CARD_{RPT_DT} that contains data on card limits for each customer's most recent card.
+-- This query creates a temporary table called CINS_TMP_DATA_RPT_CARD_2023-10-01 that contains data on card limits for each customer's most recent card.
 -- The data is selected from the DW_ANALYTICS.DATA_RPT_CARD_493 table based on the following criteria:
 -- 1. The card number starts with '3'
 -- 2. The process date is within the last 36 months before the report date specified by the user.
@@ -163,7 +165,7 @@ FROM
 -- The subquery uses the ROW_NUMBER() function to assign a row number to each record within each customer and card group, ordered by process date in descending order.
 -- The outer query then selects only the records with row number 1, which correspond to the most recent card limit for each customer and card combination.
 
-CREATE TABLE CINS_TMP_DATA_RPT_CARD_{RPT_DT} AS
+CREATE TABLE CINS_TMP_DATA_RPT_CARD_2023-10-01 AS
 SELECT CUSTOMER_CDE, CARD_CDE, PROCESS_DT, TT_CARD_LIMIT
 FROM
 (
@@ -176,14 +178,14 @@ FROM
     JOIN CINS_TMP_CUST C ON T.CUSTOMER_CDE=C.CUSTOMER_CDE
     JOIN CINS_TMP_CARD_DIM D ON T.CARD_CDE=D.CARD_CDE
     WHERE SUBSTR(T.CARD_CDE,1,1) = '3'
-        AND T.PROCESS_DT >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)
-        AND T.PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
+        AND T.PROCESS_DT >= ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -36)
+        AND T.PROCESS_DT < TO_DATE('2023-10-01', 'DD-MM-YY')
 )
 WHERE RN = 1;
 
 
 
--- This query creates a temporary table called CINS_TMP_DATA_RPT_LOAN_{RPT_DT} that contains data on the most recent loan group for each customer's most recent card.
+-- This query creates a temporary table called CINS_TMP_DATA_RPT_LOAN_2023-10-01 that contains data on the most recent loan group for each customer's most recent card.
 -- The data is selected from the DW_ANALYTICS.DATA_RPT_CARD_493 table based on the following criteria:
 -- 1. The card number starts with '3'
 -- 2. The process date is within the last 6 months before the report date specified by the user.
@@ -193,9 +195,9 @@ WHERE RN = 1;
 -- The query uses a subquery to select the most recent loan group for each customer and card combination.
 -- The subquery extracts the second character of the TT_LOAN_GROUP column and converts it to an integer.
 -- The outer query then selects the maximum loan group for each customer.
--- The result is stored in a temporary table with the name CINS_TMP_DATA_RPT_LOAN_{RPT_DT}.
+-- The result is stored in a temporary table with the name CINS_TMP_DATA_RPT_LOAN_2023-10-01.
 
-CREATE TABLE CINS_TMP_DATA_RPT_LOAN_{RPT_DT} AS
+CREATE TABLE CINS_TMP_DATA_RPT_LOAN_2023-10-01 AS
 SELECT CUSTOMER_CDE, MAX(TT_LOAN_GROUP) AS TT_LOAN_GROUP
 FROM
 (
@@ -206,8 +208,8 @@ FROM
     JOIN CINS_TMP_CARD_DIM D ON T.CARD_CDE=D.CARD_CDE
     WHERE T.COMPANY_KEY = 1
         AND SUBSTR(T.CARD_CDE,1,1) = '3'
-        AND ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) <= T.PROCESS_DT 
-        AND T.PROCESS_DT < TO_DATE('{RPT_DT}','DD-MM-YY')
+        AND ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -6) <= T.PROCESS_DT 
+        AND T.PROCESS_DT < TO_DATE('2023-10-01','DD-MM-YY')
 )
 GROUP BY CUSTOMER_CDE;
 
@@ -259,7 +261,7 @@ The final result is inserted into the POS_MERCHANT_AMT_6M table.
 */
 
 INSERT INTO POS_MERCHANT_AMT_6M 
-SELECT E.customer_cde, F.MERCHANT_ID, NULL AS TERMINAL_ID, TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, AMT_BILL, CURRENT_TIMESTAMP AS ADD_TSTP  
+SELECT E.customer_cde, F.MERCHANT_ID, NULL AS TERMINAL_ID, TO_CHAR(TO_DATE('2023-10-01', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, AMT_BILL, CURRENT_TIMESTAMP AS ADD_TSTP  
 FROM (
     SELECT customer_cde, MERCHANT_CDE, AMT_BILL 
     FROM (
@@ -267,7 +269,7 @@ FROM (
         FROM (
             SELECT customer_cde, merchant_cde, cardhdr_no, approval_cde, retrvl_refno, process_dt, AMT_BILL, ROW_NUMBER() OVER (PARTITION BY customer_cde, cardhdr_no, approval_cde, retrvl_refno ORDER BY process_dt DESC) AS rn
             FROM DW_ANALYTICS.dw_card_transaction_fct T1
-            WHERE process_dt < TO_DATE('{RPT_DT}', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
+            WHERE process_dt < TO_DATE('2023-10-01', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
         )
         WHERE rn = 1
         GROUP BY customer_cde, merchant_cde
@@ -280,7 +282,7 @@ WHERE E.MERCHANT_CDE IS NOT NULL;
 
 -- This query inserts data into the POS_MERCHANT_6M table
 INSERT INTO POS_MERCHANT_6M
-SELECT E.customer_cde, F.MERCHANT_ID, NULL AS TERMINAL_ID, TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, ct_txn_pos, CURRENT_TIMESTAMP AS ADD_TSTP  
+SELECT E.customer_cde, F.MERCHANT_ID, NULL AS TERMINAL_ID, TO_CHAR(TO_DATE('2023-10-01', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, ct_txn_pos, CURRENT_TIMESTAMP AS ADD_TSTP  
 FROM (
     SELECT customer_cde, MERCHANT_CDE, ct_txn_pos 
     FROM (
@@ -288,7 +290,7 @@ FROM (
         FROM (
             SELECT customer_cde, merchant_cde, cardhdr_no, approval_cde, retrvl_refno, process_dt, ROW_NUMBER() OVER (PARTITION BY customer_cde, cardhdr_no, approval_cde, retrvl_refno ORDER BY process_dt DESC) AS rn
             FROM DW_ANALYTICS.dw_card_transaction_fct T1
-            WHERE process_dt < TO_DATE('{RPT_DT}', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
+            WHERE process_dt < TO_DATE('2023-10-01', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
         )
         WHERE rn = 1
         GROUP BY customer_cde, merchant_cde
@@ -300,7 +302,7 @@ WHERE E.MERCHANT_CDE IS NOT NULL;
 
 -- This query inserts data into the POS_TERMINAL_AMT_6M table
 INSERT INTO POS_TERMINAL_AMT_6M
-SELECT E.customer_cde, F.MERCHANT_CDE, F.TERMINAL_ID, TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, AMT_BILL, CURRENT_TIMESTAMP AS ADD_TSTP  
+SELECT E.customer_cde, F.MERCHANT_CDE, F.TERMINAL_ID, TO_CHAR(TO_DATE('2023-10-01', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, AMT_BILL, CURRENT_TIMESTAMP AS ADD_TSTP  
 FROM (
     SELECT customer_cde, MERCHANT_CDE, TERMINAL_ID, AMT_BILL 
     FROM (
@@ -308,7 +310,7 @@ FROM (
         FROM (
             SELECT customer_cde, merchant_cde, cardhdr_no, approval_cde, retrvl_refno, process_dt, AMT_BILL, ROW_NUMBER() OVER (PARTITION BY customer_cde, cardhdr_no, approval_cde, retrvl_refno ORDER BY process_dt DESC) AS rn
             FROM DW_ANALYTICS.dw_card_transaction_fct T1
-            WHERE process_dt < TO_DATE('{RPT_DT}', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
+            WHERE process_dt < TO_DATE('2023-10-01', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
         )
         WHERE rn = 1
         GROUP BY customer_cde, merchant_cde, terminal_id
@@ -328,7 +330,7 @@ INSERT INTO POS_TERMINAL_6M
 SELECT E.customer_cde,
        F.MERCHANT_CDE,
        F.TERMINAL_ID,
-       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
+       TO_DATE('2023-10-01', 'DD-MM-YY') AS RPT_DT,
        CT_TXN_TERMINAL,
        CURRENT_TIMESTAMP ADD_TSTP  
 FROM (
@@ -352,7 +354,7 @@ FROM (
                    process_dt,
                    ROW_NUMBER() OVER (PARTITION BY customer_cde, cardhdr_no, approval_cde, retrvl_refno ORDER BY process_dt DESC) rn
             FROM DW_ANALYTICS.dw_card_transaction_fct T1
-            WHERE process_dt < TO_DATE('{RPT_DT}', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6)
+            WHERE process_dt < TO_DATE('2023-10-01', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -6)
             AND tran_status = 'S' 
             AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
         )
@@ -369,12 +371,12 @@ LEFT JOIN (
 WHERE F.MERCHANT_CDE IS NOT NULL;
 
 
--- This query creates a temporary table named CINS_TMP_CARD_CREDIT_LOAN_6M_{RPT_DT} that contains the customer code and a row number for each customer's credit card that was activated more than 6 months ago.
+-- This query creates a temporary table named CINS_TMP_CARD_CREDIT_LOAN_6M_2023-10-01 that contains the customer code and a row number for each customer's credit card that was activated more than 6 months ago.
 -- The temporary table is created using data from the DW_CARD_MASTER_DIM table.
 -- The row number is assigned based on the activation date of the credit card, with the most recent activation date receiving the lowest row number.
 -- The query filters for credit cards that start with '3', have no plastic code, no status code, and were activated at least 180 days before the specified report date.
--- The report date is specified using the placeholder {RPT_DT}.
-CREATE TABLE CINS_TMP_CARD_CREDIT_LOAN_6M_{RPT_DT} AS 
+-- The report date is specified using the placeholder 2023-10-01.
+CREATE TABLE CINS_TMP_CARD_CREDIT_LOAN_6M_2023-10-01 AS 
 SELECT 
     CUSTOMER_CDE,
     ROW_NUMBER() OVER(PARTITION BY CUSTOMER_CDE ORDER BY ACTIVATION_DT DESC) RN
@@ -383,4 +385,4 @@ WHERE
     SUBSTR(CARD_CDE,1,1) = '3' 
     AND PLASTIC_CDE = ' ' 
     AND STATUS_CDE = ' '
-    AND TO_DATE('{RPT_DT}','DD-MM-YY') - TO_DATE(ACTIVATION_DT) >= 180
+    AND TO_DATE('2023-10-01','DD-MM-YY') - TO_DATE(ACTIVATION_DT) >= 180
