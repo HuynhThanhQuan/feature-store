@@ -46,3 +46,35 @@ INFO:root:Created file: CINS_POS_MERCHANT_AMT_6M_20231001.sql
 INFO:root:Created file: CINS_POS_TERMINAL_6M_20231001.sql
 INFO:root:Created file: CINS_POS_TERMINAL_AMT_6M_20231001.sql
 INFO:root:Script completed.
+INFO:root:Starting script...
+INFO:root:REPORT_DATE_FOLDER: ./report_date\2023-10-01
+INFO:root:PLACEHOLDER_FOLDER: ./placeholder
+INFO:root:Created file: CINS_CARD_CREDIT_LOAN_6M_20231001.sql
+INFO:root:Created file: CINS_CARD_DIM_20231001.sql
+INFO:root:Created file: CINS_CREDIT_CARD_TRANSACTION_20231001.sql
+INFO:root:Created file: CINS_CUSTOMER_20231001.sql
+INFO:root:Created file: CINS_CUSTOMER_STATUS_20231001.sql
+INFO:root:Created file: CINS_DATA_RPT_CARD_20231001.sql
+INFO:root:Created file: CINS_DATA_RPT_LOAN_20231001.sql
+INFO:root:Created file: CINS_EB_MB_CROSSELL_20231001.sql
+INFO:root:Created file: CINS_POS_MERCHANT_6M_20231001.sql
+INFO:root:Created file: CINS_POS_MERCHANT_AMT_6M_20231001.sql
+INFO:root:Created file: CINS_POS_TERMINAL_6M_20231001.sql
+INFO:root:Created file: CINS_POS_TERMINAL_AMT_6M_20231001.sql
+INFO:root:Script completed.
+INFO:root:Starting script...
+INFO:root:REPORT_DATE_FOLDER: ./report_date\2023-10-01
+INFO:root:PLACEHOLDER_FOLDER: ./placeholder
+INFO:root:Created file: CINS_CARD_CREDIT_LOAN_6M_20231001.sql
+INFO:root:Created file: CINS_CARD_DIM_20231001.sql
+INFO:root:Created file: CINS_CREDIT_CARD_TRANSACTION_20231001.sql
+INFO:root:Created file: CINS_CUSTOMER_20231001.sql
+INFO:root:Created file: CINS_CUSTOMER_STATUS_20231001.sql
+INFO:root:Created file: CINS_DATA_RPT_CARD_20231001.sql
+INFO:root:Created file: CINS_DATA_RPT_LOAN_20231001.sql
+INFO:root:Created file: CINS_EB_MB_CROSSELL_20231001.sql
+INFO:root:Created file: CINS_POS_MERCHANT_6M_20231001.sql
+INFO:root:Created file: CINS_POS_MERCHANT_AMT_6M_20231001.sql
+INFO:root:Created file: CINS_POS_TERMINAL_6M_20231001.sql
+INFO:root:Created file: CINS_POS_TERMINAL_AMT_6M_20231001.sql
+INFO:root:Script completed.
