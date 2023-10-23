@@ -9,7 +9,7 @@ logging.info('Starting script...')
 
 
 # Assuming RPT_DT is a string in the format "YYYY-MM-DD"
-RPT_DT = "2023-10-01"
+RPT_DT = "01-10-2023" #DD-MM-YYYY
 RPT_DT_TBL = RPT_DT.replace("-", "")
 
 # Set the folder path

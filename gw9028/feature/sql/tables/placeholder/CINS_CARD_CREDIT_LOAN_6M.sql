@@ -4,12 +4,9 @@
 -- The query filters for credit cards that start with '3', have no plastic code, no status code, and were activated at least 180 days before the specified report date.
 -- The report date is specified using the placeholder {RPT_DT}.
 CREATE TABLE CINS_CARD_CREDIT_LOAN_6M_{RPT_DT_TBL} AS 
-SELECT 
-    CUSTOMER_CDE,
-    ROW_NUMBER() OVER(PARTITION BY CUSTOMER_CDE ORDER BY ACTIVATION_DT DESC) RN
+SELECT CUSTOMER_CDE, ROW_NUMBER() OVER(PARTITION BY CUSTOMER_CDE ORDER BY ACTIVATION_DT DESC) RN
 FROM DW_ANALYTICS.DW_CARD_MASTER_DIM
-WHERE 
-    SUBSTR(CARD_CDE,1,1) = '3' 
+WHERE SUBSTR(CARD_CDE,1,1) = '3' 
     AND PLASTIC_CDE = ' ' 
     AND STATUS_CDE = ' '
     AND TO_DATE('{RPT_DT}','DD-MM-YY') - TO_DATE(ACTIVATION_DT) >= 180
