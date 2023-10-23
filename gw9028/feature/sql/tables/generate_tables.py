@@ -6,8 +6,6 @@ logging.basicConfig(filename='generate_tables.log', level=logging.DEBUG)
 
 logging.info('Starting script...')
 
-
-
 # Assuming RPT_DT is a string in the format "YYYY-MM-DD"
 RPT_DT = "01-10-2023" #DD-MM-YYYY
 RPT_DT_TBL = RPT_DT.replace("-", "")
@@ -21,7 +19,7 @@ logging.info('REPORT_DATE_FOLDER: ' + REPORT_DATE_FOLDER)
 logging.info('PLACEHOLDER_FOLDER: ' + PLACEHOLDER_FOLDER)
 
 if not os.path.exists(REPORT_DATE_FOLDER):
-    os.makedirs(REPORT_DATE_FOLDER) 
+    os.makedirs(REPORT_DATE_FOLDER)
 
 # Loop through all files in the folder
 for filename in os.listdir(PLACEHOLDER_FOLDER):
