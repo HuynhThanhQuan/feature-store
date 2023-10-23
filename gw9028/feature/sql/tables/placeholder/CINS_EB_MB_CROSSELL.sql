@@ -7,7 +7,7 @@
 -- 2. The login is allowed (LOGIN_ALLOWED is not 'N')
 -- 3. The record is not deleted (DEL_FLG is not 'N')
 -- If there are multiple records for the same customer code and corporate ID, only the most recent record is selected.
-CREATE TABLE CINS_TMP_EB_MB_CROSSELL AS 
+CREATE TABLE CINS_EB_MB_CROSSELL_{RPT_DT_TBL} AS 
 SELECT CUSTOMER_CDE, CORP_ID, INPUT_DT 
 FROM 
     (SELECT CUSTOMER_CDE, CORP_ID, INPUT_DT, ROW_NUMBER() OVER(PARTITION BY CUSTOMER_CDE, CORP_ID ORDER BY REC_UPDATE_DT DESC) RN 

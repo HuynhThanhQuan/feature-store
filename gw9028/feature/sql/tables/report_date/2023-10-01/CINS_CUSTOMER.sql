@@ -3,7 +3,7 @@
 -- 2. They are active
 -- 3. They belong to company key '1'
 -- 4. They have a customer status of 'HOAT DONG' on the report date specified by the user
-CREATE TABLE CINS_TMP_CUST AS
+CREATE TABLE CINS_CUSTOMER_20231001 AS
 SELECT A.CUSTOMER_CDE 
 FROM 
         (SELECT customer_cde 
@@ -15,5 +15,5 @@ JOIN
         (SELECT DISTINCT customer_cde 
          FROM dw_analytics.dw_cust_product_loc_fct
          WHERE CUST_STATUS = 'HOAT DONG' 
-             AND PROCESS_DT = TO_DATE('{RPT_DT}','DD-MM-YYYY')) B 
+             AND PROCESS_DT = TO_DATE('2023-10-01','DD-MM-YYYY')) B 
 ON A.CUSTOMER_CDE = B.CUSTOMER_CDE;

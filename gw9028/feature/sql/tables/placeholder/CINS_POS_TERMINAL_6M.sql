@@ -1,5 +1,5 @@
 -- This table contains data on the number of transactions for each terminal for each customer in the last 6 months.
-CREATE TABLE POS_TERMINAL_6M (
+CREATE TABLE CINS_POS_TERMINAL_6M_{RPT_DT_TBL} (
     CUSTOMER_CDE VARCHAR2(25 BYTE),
     MERCHANT_CDE VARCHAR2(25 BYTE),
     TERMINAL_ID VARCHAR2(20 BYTE),
@@ -10,12 +10,12 @@ CREATE TABLE POS_TERMINAL_6M (
 
 
 /*
-This script inserts data into the POS_TERMINAL_6M table by selecting customer, merchant, and terminal information from the DW_CARD_TRANSACTION_FCT and DW_CARD_TERMINAL_DIM tables. 
+This script inserts data into the CINS_POS_TERMINAL_6M_{RPT_DT_TBL} table by selecting customer, merchant, and terminal information from the DW_CARD_TRANSACTION_FCT and DW_CARD_TERMINAL_DIM tables. 
 The data is filtered based on transaction status, customer code, and a specified date range. 
 The script also calculates the count of transactions for each customer and selects the terminal with the highest transaction count. 
-The resulting data is then inserted into the POS_TERMINAL_6M table along with the report date and current timestamp.
+The resulting data is then inserted into the CINS_POS_TERMINAL_6M_{RPT_DT_TBL} table along with the report date and current timestamp.
 */
-INSERT INTO POS_TERMINAL_6M
+INSERT INTO CINS_POS_TERMINAL_6M_{RPT_DT_TBL}
 SELECT E.customer_cde,
        F.MERCHANT_CDE,
        F.TERMINAL_ID,

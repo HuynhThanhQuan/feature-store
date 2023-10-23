@@ -1,5 +1,5 @@
 -- This table contains data on the total amount billed for each merchant for each customer in the last 6 months.
-CREATE TABLE POS_MERCHANT_AMT_6M (
+CREATE TABLE CINS_POS_MERCHANT_AMT_6M_20231001 (
     CUSTOMER_CDE VARCHAR2(25 BYTE),
     MERCHANT_CDE VARCHAR2(25 BYTE),
     TERMINAL_ID VARCHAR2(20 BYTE),
@@ -9,14 +9,14 @@ CREATE TABLE POS_MERCHANT_AMT_6M (
 );
 
 
-/* This script inserts data into the POS_MERCHANT_AMT_6M table by selecting the customer code, merchant ID, report date, amount billed, and timestamp from the DW_CARD_TRANSACTION_FCT and DW_CARD_MERCHANT_DIM tables. 
+/* This script inserts data into the CINS_POS_MERCHANT_AMT_6M_20231001 table by selecting the customer code, merchant ID, report date, amount billed, and timestamp from the DW_CARD_TRANSACTION_FCT and DW_CARD_MERCHANT_DIM tables. 
 The data is filtered based on certain conditions and grouped by customer code and merchant code. 
 The result is then joined with the DW_CARD_MERCHANT_DIM table to get the merchant ID. 
-The final result is inserted into the POS_MERCHANT_AMT_6M table.
+The final result is inserted into the CINS_POS_MERCHANT_AMT_6M_20231001 table.
 */
 
-INSERT INTO POS_MERCHANT_AMT_6M 
-SELECT E.customer_cde, F.MERCHANT_ID, NULL AS TERMINAL_ID, TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, AMT_BILL, CURRENT_TIMESTAMP AS ADD_TSTP  
+INSERT INTO CINS_POS_MERCHANT_AMT_6M_20231001 
+SELECT E.customer_cde, F.MERCHANT_ID, NULL AS TERMINAL_ID, TO_CHAR(TO_DATE('2023-10-01', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, AMT_BILL, CURRENT_TIMESTAMP AS ADD_TSTP  
 FROM (
     SELECT customer_cde, MERCHANT_CDE, AMT_BILL 
     FROM (
@@ -24,7 +24,7 @@ FROM (
         FROM (
             SELECT customer_cde, merchant_cde, cardhdr_no, approval_cde, retrvl_refno, process_dt, AMT_BILL, ROW_NUMBER() OVER (PARTITION BY customer_cde, cardhdr_no, approval_cde, retrvl_refno ORDER BY process_dt DESC) AS rn
             FROM DW_ANALYTICS.dw_card_transaction_fct T1
-            WHERE process_dt < TO_DATE('{RPT_DT}', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
+            WHERE process_dt < TO_DATE('2023-10-01', 'DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('2023-10-01', 'DD-MM-YY'), -6) AND tran_status = 'S' AND EXISTS (SELECT 1 FROM CINS_TMP_CUST t2 WHERE t1.CUSTOMER_CDE = t2.CUSTOMER_CDE) 
         )
         WHERE rn = 1
         GROUP BY customer_cde, merchant_cde

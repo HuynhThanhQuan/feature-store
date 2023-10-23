@@ -1,5 +1,5 @@
 -- This table contains data on the number of transactions for each merchant for each customer in the last 6 months.
-CREATE TABLE POS_MERCHANT_6M (
+CREATE TABLE CINS_POS_MERCHANT_6M_{RPT_DT_TBL} (
     CUSTOMER_CDE VARCHAR2(25 BYTE),
     MERCHANT_CDE VARCHAR2(25 BYTE),
     TERMINAL_ID VARCHAR2(20 BYTE),
@@ -9,7 +9,7 @@ CREATE TABLE POS_MERCHANT_6M (
 );
 
 -- This query inserts data into the POS_MERCHANT_6M table
-INSERT INTO POS_MERCHANT_6M
+INSERT INTO CINS_POS_MERCHANT_6M_{RPT_DT_TBL}
 SELECT E.customer_cde, F.MERCHANT_ID, NULL AS TERMINAL_ID, TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, ct_txn_pos, CURRENT_TIMESTAMP AS ADD_TSTP  
 FROM (
     SELECT customer_cde, MERCHANT_CDE, ct_txn_pos 

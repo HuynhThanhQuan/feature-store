@@ -3,7 +3,7 @@
 -- The row number is assigned based on the activation date of the credit card, with the most recent activation date receiving the lowest row number.
 -- The query filters for credit cards that start with '3', have no plastic code, no status code, and were activated at least 180 days before the specified report date.
 -- The report date is specified using the placeholder {RPT_DT}.
-CREATE TABLE CINS_TMP_CARD_CREDIT_LOAN_6M_{RPT_DT} AS 
+CREATE TABLE CINS_CARD_CREDIT_LOAN_6M_{RPT_DT_TBL} AS 
 SELECT 
     CUSTOMER_CDE,
     ROW_NUMBER() OVER(PARTITION BY CUSTOMER_CDE ORDER BY ACTIVATION_DT DESC) RN
