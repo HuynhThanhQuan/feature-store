@@ -1,13 +1,14 @@
 import os
 import logging
+import datetime
 
 # Set up logging
-logging.basicConfig(filename='generate_tables.log', level=logging.DEBUG)
-
+now = datetime.datetime.now()
+logging.basicConfig(filename=f'log\generate_tables_{now.strftime("%Y-%m-%d")}.log', level=logging.DEBUG)
 logging.info('Starting script...')
 
 # Assuming RPT_DT is a string in the format "YYYY-MM-DD"
-RPT_DT = "01-10-2023" #DD-MM-YYYY
+RPT_DT = "11-06-2023" #DD-MM-YYYY
 RPT_DT_TBL = RPT_DT.replace("-", "")
 
 # Set the folder path
