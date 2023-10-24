@@ -1,6 +1,7 @@
 import yaml
 import datetime
 import gen_script
+import argparse
 
 
 def read_RPT_DT():
@@ -15,5 +16,14 @@ def read_RPT_DT():
 
 
 if __name__ == '__main__':
-    RPT_DT, config = read_RPT_DT()
-    gen_script.gen_tmp_table_script(RPT_DT, config)
+    parser = argparse.ArgumentParser(description='Description of your program')
+    parser.add_argument('--arg1', type=int, help='Description of arg1')
+    parser.add_argument('--arg2', type=str, help='Description of arg2')
+
+    args = parser.parse_args()
+
+    if args.arg1:
+        print(f"Arg1 value: {args.arg1}")
+    if args.arg2:
+        print(f"Arg2 value: {args.arg2}")
+
