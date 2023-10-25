@@ -1347,6 +1347,12 @@ JOIN
    WHERE CATEGORY = 'TRAVEL') B ON A.MCC_CDE = B.MCC_CDE
 GROUP BY a.CUSTOMER_CDE;
 
+/*
+
+End Batch 1
+
+
+*/
 
 INSERT INTO {TBL_NM}
 SELECT customer_cde,
