@@ -1604,7 +1604,7 @@ GROUP BY A.CUSTOMER_CDE;
 
 /*
 Feature Name: FAV_POS_6M_CT
-Derived From: POS_MERCHANT_6M_TEST, POS_TERMINAL_6M_TEST
+Derived From: CINS_TMP_POS_MERCHANT_6M_{RPT_DT_TBL}, CINS_TMP_POS_TERMINAL_6M_{RPT_DT_TBL}
 */
 INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
@@ -1623,7 +1623,7 @@ FROM
                            ORDER BY CT_TXN_TERMINAL DESC) RN1
    FROM (
            (SELECT *
-            FROM POS_MERCHANT_6M_TEST
+            FROM CINS_TMP_POS_MERCHANT_6M_{RPT_DT_TBL}
             WHERE to_date(RPT_DT, 'DD-MM-YY') = to_date('{RPT_DT}', 'DD-MM-YY') )
          UNION  ALL
            (SELECT CUSTOMER_CDE,
@@ -1632,13 +1632,13 @@ FROM
                    TO_CHAR(RPT_DT),
                    CT_TXN_TERMINAL,
                    ADD_TSTP
-            FROM POS_TERMINAL_6M_TEST
+            FROM CINS_TMP_POS_TERMINAL_6M_{RPT_DT_TBL}
             WHERE to_date(RPT_DT, 'DD-MM-YY') = to_date('{RPT_DT}', 'DD-MM-YY') )))
 WHERE RN1 = 1;
 
 /*
 Feature Name: FAV_POS_6M_SM
-Derived From: POS_TERMINAL_AMT_6M_TEST, POS_MERCHANT_AMT_6M_TEST
+Derived From: CINS_TMP_POS_TERMINAL_AMT_6M_{RPT_DT_TBL}, CINS_TMP_POS_MERCHANT_AMT_6M_{RPT_DT_TBL}
 */
 INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
@@ -1657,11 +1657,11 @@ FROM
                            ORDER BY AMT_BILL DESC) RN1
    FROM (
            (SELECT *
-            FROM POS_TERMINAL_AMT_6M_TEST
+            FROM CINS_TMP_POS_TERMINAL_AMT_6M_{RPT_DT_TBL}
             WHERE to_date(RPT_DT, 'DD-MM-YY') = to_date('{RPT_DT}', 'DD-MM-YY'))
          UNION  ALL
            (SELECT *
-            FROM POS_MERCHANT_AMT_6M_TEST
+            FROM CINS_TMP_POS_MERCHANT_AMT_6M_{RPT_DT_TBL}
             WHERE to_date(RPT_DT, 'DD-MM-YY') = to_date('{RPT_DT}', 'DD-MM-YY'))))
 WHERE RN1 = 1;
 
