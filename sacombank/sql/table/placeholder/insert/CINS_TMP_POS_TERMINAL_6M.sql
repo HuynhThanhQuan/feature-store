@@ -1,4 +1,3 @@
--- This table contains data on the number of transactions for each terminal for each customer in the last 6 months.
 INSERT INTO CINS_TMP_POS_TERMINAL_6M_{RPT_DT_TBL} 
 select E.customer_cde,
     F.MERCHANT_CDE, F.TERMINAL_ID
@@ -24,7 +23,7 @@ from
         from DW_ANALYTICS.dw_card_transaction_fct T1
         where process_dt < TO_DATE('{RPT_DT}','DD-MM-YY') AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}','DD-MM-YY'), -6)
         and tran_status = 'S' 
-        and  exists (select 1 from CINS_TMP_CUST t2 where t1.CUSTOMER_CDE=t2.CUSTOMER_CDE) 
+        and  exists (select 1 from CINS_TMP_CUSTOMER_{RPT_DT_TBL} t2 where t1.CUSTOMER_CDE=t2.CUSTOMER_CDE) 
  )    
          )
 where rn = 1

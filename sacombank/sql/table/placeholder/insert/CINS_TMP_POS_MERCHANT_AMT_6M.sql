@@ -1,4 +1,3 @@
--- This table contains data on the total amount billed for each merchant for each customer in the last 6 months.
 INSERT INTO CINS_TMP_POS_MERCHANT_AMT_6M_{RPT_DT_TBL} 
 select E.customer_cde, F.MERCHANT_ID  , NULL TERMINAL_ID,TO_CHAR(TO_DATE('{RPT_DT}','DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, AMT_BILL,CURRENT_TIMESTAMP ADD_TSTP  
 FROM (
@@ -16,7 +15,7 @@ FROM (
                 where process_dt < TO_DATE('{RPT_DT}','DD-MM-YY') 
                     AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}','DD-MM-YY'), -6)
                     and tran_status = 'S' 
-                    and exists (select 1 from CINS_TMP_CUST t2 where t1.CUSTOMER_CDE=t2.CUSTOMER_CDE) 
+                    and exists (select 1 from CINS_TMP_CUSTOMER_{RPT_DT_TBL} t2 where t1.CUSTOMER_CDE=t2.CUSTOMER_CDE) 
             )
         )
     where rn = 1
