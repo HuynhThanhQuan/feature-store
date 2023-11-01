@@ -6,7 +6,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_MBIB_SUM_TXN_AMT_1M' FTR_NM,
                                 NVL(SUM(ABS(AMT_ENTRY_LCL)), 0) FTR_VAL,
-                                TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                 CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT DISTINCT TXN_ID,
@@ -30,7 +30,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_MBIB_CT_TXN_1M' FTR_NM,
                            COUNT(TXN_ID) FTR_VAL,
-                           TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                           TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                            CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_EB_TRANSACTION_FCT
 WHERE TXN_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -49,7 +49,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_SACOMPAY_SUM_TXN_AMT_1M' FTR_NM,
                                     NVL(SUM((TO_AMT)), 0) FTR_VAL,
-                                    TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                    TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                     CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT DISTINCT TXN_ID,
@@ -73,7 +73,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_SACOMPAY_CT_TXN_1M' FTR_NM,
                                COUNT(DISTINCT TXN_ID) FTR_VAL,
-                               TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                               TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_EWALL_TRANSACTION_FCT
 WHERE PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -92,7 +92,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_SUM_TXN_AMT_1M' FTR_NM,
                                     NVL(SUM(ABS(AMT_BILL)), 0) FTR_VAL,
-                                    TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                    TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                     CURRENT_TIMESTAMP ADD_TSTP
 FROM CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
 WHERE PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -107,7 +107,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_CT_TXN_1M' FTR_NM,
                                COUNT(*) FTR_VAL,
-                               TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                               TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                CURRENT_TIMESTAMP ADD_TSTP
 FROM CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
 WHERE PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -122,7 +122,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_SUM_REV_CASH_1M' FTR_NM,
                                      NVL(SUM(ABS(AMT_BILL)), 0) FTR_VAL,
-                                     TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                     TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                      CURRENT_TIMESTAMP ADD_TSTP
 FROM CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
 WHERE PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -143,7 +143,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_SUM_REV_SALE_1M' FTR_NM,
                                      NVL(SUM(ABS(AMT_BILL)), 0) FTR_VAL,
-                                     TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                     TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                      CURRENT_TIMESTAMP ADD_TSTP
 FROM CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
 WHERE PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -165,7 +165,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_ID CUSTOMER_CDE,
        'CASA_CT_TXN_1M' FTR_NM,
                         COUNT(STMT_ENTRY_ID) FTR_VAL,
-                        TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                        TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                         CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DWA_STMT_EBANK TXN
 JOIN
@@ -188,7 +188,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_ID CUSTOMER_CDE,
        'CASA_SUM_TXN_AMT_1M' FTR_NM,
                              NVL(SUM(ABS(AMT_LCY)), 0) FTR_VAL,
-                             TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                             TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                              CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DWA_STMT_EBANK TXN
 JOIN
@@ -211,7 +211,7 @@ INSERT INTO {TBL_NM}
 SELECT customer_cde,
        'TRAVEL_SM_AMT_1M' FEATURE_NM,
        sum(A.AMT_BILL) FEATURE_VAL,
-       TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
        CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT customer_cde,

@@ -6,7 +6,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_MBIB_DAY_SINCE_LTST_TXN' FTR_NM,
                                     TO_DATE('{RPT_DT}', 'DD-MM-YY') - NVL(MAX(TXN_DT), ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)) FTR_VAL,
-                                    TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                    TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                     CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_EB_TRANSACTION_FCT
 WHERE TXN_DT >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)
@@ -25,7 +25,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_MBIB_INACTIVE' FTR_NM,
                           1 FTR_VAL,
-                          TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                          TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                           CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -55,7 +55,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_SACOMPAY_DAY_SINCE_LTST_TXN' FTR_NM,
                                         TO_DATE('{RPT_DT}', 'DD-MM-YY') - NVL(MAX(PROCESS_DT), ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)) FTR_VAL,
-                                        TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                        TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                         CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_EWALL_TRANSACTION_FCT
 WHERE PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -74,7 +74,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_SACOMPAY_CT_INACTIVE' FTR_NM,
                                  COUNT(*) FTR_VAL,
-                                 TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                 TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                  CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT CUSTOMER_CDE,
@@ -109,7 +109,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_SACOMPAY_INACTIVE' FTR_NM,
                               1 FTR_VAL,
-                              TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                              TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                               CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -139,7 +139,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_DAY_SINCE_LTST_TXN' FTR_NM,
                                         TO_DATE('{RPT_DT}', 'DD-MM-YY') - NVL(MAX(PROCESS_DT), ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)) FTR_VAL,
-                                        TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                        TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                         CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CARD_TRANSACTION_FCT
 WHERE PROCESS_DT >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)
@@ -177,7 +177,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_SUM_BAL_NOW' FTR_NM,
                                  SUM(TT_ORIGINAL_BALANCE) FTR_VAL,
-                                 TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                 TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                  CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT BAL.*,
@@ -206,7 +206,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_CT_CARD_ACTIVE' FTR_NM,
                                     COUNT(DISTINCT CARD_CDE) FTR_VAL,
-                                    TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                    TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                     CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CARD_MASTER_DIM DIM
 WHERE ACTIVE = 1
@@ -248,7 +248,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_CT_INACTIVE_ALL' FTR_NM,
                                      COUNT(*) FTR_VAL,
-                                     TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                     TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                      CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT CUSTOMER_CDE,
@@ -268,7 +268,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CARD_CREDIT_INACTIVE' FTR_NM,
                               1 FTR_VAL,
-                              TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                              TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                               CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -303,7 +303,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CASA_CT_ACCT_ACTIVE' FTR_NM,
                              COUNT(DISTINCT ACCT_ID) FTR_VAL,
-                             TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                             TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                              CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_ACCOUNT_MASTER_DIM DIM
 WHERE ACTIVE = 1
@@ -332,7 +332,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_ID CUSTOMER_CDE,
        'CASA_DAY_SINCE_LTST_TXN' FTR_NM,
                                  TO_DATE('{RPT_DT}', 'DD-MM-YY') - NVL(MAX(PROCESS_DT), ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)) FTR_VAL,
-                                 TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                                 TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                                  CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DWA_STMT_EBANK TXN
 JOIN
@@ -355,7 +355,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CASA_SUM_BAL_NOW' FTR_NM,
                           SUM(ACTUAL_BAL_LCL) FTR_VAL,
-                          TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                          TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                           CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT CUSTOMER_CDE,
@@ -380,7 +380,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CASA_INACTIVE' FTR_NM,
                        1 FTR_VAL,
-                       TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                        CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -417,7 +417,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'CASA_INACTIVE' FTR_NM,
                        1 FTR_VAL,
-                       TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                        CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -456,7 +456,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'AGE' FTR_NM,
              FLOOR(MONTHS_BETWEEN(TO_DATE('{RPT_DT}', 'DD-MM-YY'), BIRTHDAY)/12) FTR_VAL,
-             TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+             TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
              CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -481,7 +481,7 @@ SELECT CUSTOMER_CDE,
                       WHEN FLOOR(MONTHS_BETWEEN(TO_DATE('{RPT_DT}', 'DD-MM-YY'), BIRTHDAY)/12) >= 65 THEN 'Nghỉ hưu'
                       ELSE NULL
                   END FTR_VAL,
-                  TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                  TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                   CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -509,7 +509,7 @@ SELECT CUSTOMER_CDE,
                      WHEN EXTRACT(YEAR
                                   FROM BIRTHDAY) BETWEEN 2013 AND 2025 THEN 'Gen A'
                  END FTR_VAL,
-                 TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                 TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                  CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM
 WHERE ACTIVE = 1
@@ -527,7 +527,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'PROFESSION' FTR_NM,
                     INDUSTRY_GROUP_NAME_VN FTR_VAL,
-                    TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                    TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                     CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_DIM A
 JOIN DW_ANALYTICS.DW_INDUSTRY_DIM B ON A.SUB_INDUSTRY_CDE = B.SUB_INDUSTRY_CDE
@@ -545,7 +545,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'DEBT_GRP' FTR_NM,
                   DB_GRP_CIC FTR_VAL,
-                  TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                  TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                   CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_CUSTOMER_FULL_DIM
 WHERE DB_GRP_CIC IS NOT NULL
@@ -574,7 +574,7 @@ INSERT INTO {TBL_NM} WITH CUST AS
 SELECT C.CUSTOMER_CDE,
        'AREA' FTR_NM,
               O.AREA_CDE FTR_VAL,
-              TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+              TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
               CURRENT_TIMESTAMP ADD_TSTP
 FROM CUST C
 JOIN DW_ANALYTICS.DW_ORG_LOCATION_DIM O ON C.COMPANY_BOOK = O.SUB_BRANCH_CDE
@@ -583,7 +583,7 @@ UNION ALL
 SELECT C.CUSTOMER_CDE,
        'BRANCH' FTR_NM,
                 O.BRANCH_CDE FTR_VAL,
-                TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                 CURRENT_TIMESTAMP ADD_TSTP
 FROM CUST C
 JOIN DW_ANALYTICS.DW_ORG_LOCATION_DIM O ON C.COMPANY_BOOK = O.SUB_BRANCH_CDE
@@ -600,7 +600,7 @@ SELECT CUSTOMER_CDE,
            WHEN CUST_STT = 1 THEN 1
            WHEN CUST_STT = 2 THEN 0
        END FTR_VAL,
-       TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
        CURRENT_TIMESTAMP ADD_TSTP
 FROM CINS_TMP_CUSTOMER_STATUS_{RPT_DT_TBL}
 WHERE CUST_STT >= 1
@@ -614,7 +614,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'REACTIVATED' FTR_NM,
        1 FTR_VAL,
-       TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
        CURRENT_TIMESTAMP ADD_TSTP
 FROM CINS_TMP_CUSTOMER_STATUS_{RPT_DT_TBL}
 WHERE CUST_STT = 2
@@ -629,7 +629,7 @@ INSERT INTO {TBL_NM}
 SELECT DISTINCT CUSTOMER_CDE,
                 'EB_MBIB_HOLD' FTR_NM,
                 1 FTR_VAL,
-                TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                 CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_EB_USER
 WHERE PROCESS_DT IN
@@ -649,7 +649,7 @@ INSERT INTO {TBL_NM}
 SELECT DISTINCT CUSTOMER_CDE,
                 'EB_SACOMPAY_HOLD' FTR_NM,
                 1 FTR_VAL,
-                TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+                TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
                 CURRENT_TIMESTAMP ADD_TSTP
 FROM DW_ANALYTICS.DW_EWALL_USER_DIM
 WHERE FIRST_SIGNED_ON < TO_DATE('{RPT_DT}', 'DD-MM-YY')
@@ -665,7 +665,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_MBIB_DAY_SINCE_ACTIVE' FTR_NM,
        0 FTR_VAL,
-       TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
        CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT CUSTOMER_CDE,
@@ -686,7 +686,7 @@ INSERT INTO {TBL_NM}
 SELECT CUSTOMER_CDE,
        'EB_MBIB_DAY_SINCE_ACTIVE' FTR_NM,
        TO_DATE('{RPT_DT}', 'DD-MM-YY') - ACTIVATE_DATE FTR_VAL,
-       TO_CHAR(TO_DATE('{RPT_DT}', 'DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
        CURRENT_TIMESTAMP ADD_TSTP
 FROM
   (SELECT CUSTOMER_CDE,
