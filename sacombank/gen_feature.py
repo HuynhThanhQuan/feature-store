@@ -149,8 +149,9 @@ def run_feature_query(response):
             
     # run_multiquery(feature_sqls)
     
+    logger.info(f"Prepare inserting feature into table {config['FEATURE_STORE_TBL_NM']}")
     s0 = datetime.datetime.now()
-    logger.info('Start quering features with parallel session')
+    logger.info('Start quering features')
     dbEngine = oraDB.create_engine()
     feature_sql_jobs = []
     with dbEngine.connect() as conn:
@@ -159,9 +160,9 @@ def run_feature_query(response):
         for feat_sql in feature_sqls:
             f_record = run_feature_record_query_with_conn(feat_sql, conn)
             feature_sql_jobs.append(f_record)
-    logger.info('End quering features with parallel session')
+    logger.info('End quering features')
     el = datetime.datetime.now() - s0
-    logger.info(f'[timeit] Elapsed time of parallel session {el}')
+    logger.info(f'[timeit] Elapsed time: {el}')
     
     result = {
         'FEATURE_SQL_JOBS': feature_sql_jobs

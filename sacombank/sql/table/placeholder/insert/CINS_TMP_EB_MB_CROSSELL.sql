@@ -7,4 +7,4 @@ FROM (
         AND LOGIN_ALLOWED NOT IN ('N') 
         AND DEL_FLG NOT IN ('N')
 ) 
-WHERE RN = 1;
+WHERE RN = 1

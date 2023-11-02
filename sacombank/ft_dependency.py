@@ -43,7 +43,7 @@ def analyze(response):
             
             # Save Output
             exc_time = response['EXECUTION_TIMESTAMP']
-            output_fn = f'./output/feature_dependency_{exc_time}.csv'
+            output_fn = f'./output/feature_dependency_{last_valid_meta_fn}_{exc_time}.csv'
             output_df = pd.DataFrame(data=all_feat_tbls, columns=['feature_name', 'derived_table'])
             output_df.to_csv(output_fn)
             logger.debug(f'Save output at {output_fn}')

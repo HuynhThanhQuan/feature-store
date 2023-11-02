@@ -64,7 +64,6 @@ def generate_features_report_date(response):
     # Create & Insert data into TMP table
     response.update(check_DB.check_exists(response))
     response.update(gen_table.create_empty_tmp_tables(response))
-    response.update(check_DB.check_exists(response))
     response.update(gen_table.insert_into_tmp_tables(response))
     
     # Gen features
@@ -94,6 +93,7 @@ def create_empty_tmp_tables(response):
 
 @util.timeit
 def insert_into_tmp_tables(response):
+    response.update(gen_script.gen_tmp_table_script(response))
     response.update(check_DB.check_exists(response))
     response.update(gen_table.insert_into_tmp_tables(response))
 
@@ -124,7 +124,7 @@ if __name__ == '__main__':
                         6. Run INSERT data INTO TMP tables
                         7. Run GENERATE Features and insert into Feature Store
                         8. Test new function
-                        9. Visualize Feature and Table Dependencies
+                        9. Analyze Feature and Table Dependency
     """)
     parser.add_argument('--log', choices=['DEBUG','INFO', 'WARNING', 'ERROR', 'CRITICAL'], default='INFO', help='Set the logging level')
     args = parser.parse_args()

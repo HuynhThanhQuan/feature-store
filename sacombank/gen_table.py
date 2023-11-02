@@ -38,11 +38,13 @@ def create_empty_tmp_tables(response):
     tmp_customer = f'CINS_TMP_CUSTOMER_{RPT_DT_TBL}'
     if not table_check[tmp_customer]:
         read_sql_and_execute(tmp_customer, folder_path)
-    del table_check[tmp_customer]
+    if tmp_customer in table_check.keys():
+        del table_check[tmp_customer]
     tmp_card_dim = f'CINS_TMP_CARD_DIM_{RPT_DT_TBL}'
     if not table_check[tmp_card_dim]:
         read_sql_and_execute(tmp_card_dim, folder_path)
-    del table_check[tmp_card_dim]
+    if tmp_card_dim in table_check.keys():
+        del table_check[tmp_card_dim]
     # Run the rest
     for k, v in table_check.items():
         if not v:
@@ -62,10 +64,12 @@ def insert_into_tmp_tables(response):
     # Generate prerequisite tables include CINS_TMP_CUSTOMER, CINS_TMP_CARD_DIM
     tmp_customer = f'CINS_TMP_CUSTOMER_{RPT_DT_TBL}'
     read_sql_and_execute(tmp_customer, folder_path)
-    del table_check[tmp_customer]
+    if tmp_customer in table_check.keys():
+        del table_check[tmp_customer]
     tmp_card_dim = f'CINS_TMP_CARD_DIM_{RPT_DT_TBL}'
     read_sql_and_execute(tmp_card_dim, folder_path)
-    del table_check[tmp_card_dim]
+    if tmp_card_dim in table_check.keys():
+        del table_check[tmp_card_dim]
     # Run the rest
     for k, v in table_check.items():
         read_sql_and_execute(k, folder_path)
