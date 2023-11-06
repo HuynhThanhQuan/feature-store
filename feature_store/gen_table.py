@@ -15,6 +15,7 @@ def read_sql_and_execute(table_name, folder_path):
             k_query = f.read()
         # logging.debug(k_query)
         cur.execute(k_query)
+        cur.execute('COMMIT')
         logger.info(f'Succeed to execute {table_name}')
     except cx_Oracle.DatabaseError as e:
         logger.error(e)

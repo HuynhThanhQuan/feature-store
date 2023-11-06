@@ -42,6 +42,7 @@ def run_feature_record_query(f_record):
         else:
             logger.debug(f'[WARN] Start INSERT script {desc}')
         cur.execute(query)
+        cur.execute('COMMIT')
         if features and d_tables:
             logger.debug(f'Succeed INSERT feature {features} FROM {d_tables} - ftype: {ftype}')
         else:
@@ -156,7 +157,7 @@ def run_feature_query(response):
     feature_sql_jobs = []
     with dbEngine.connect() as conn:
         # conn.execute("ALTER SESSION FORCE PARALLEL DML PARALLEL 64")
-        conn.execute("ALTER SESSION FORCE PARALLEL QUERY PARALLEL 64")
+        # conn.execute("ALTER SESSION FORCE PARALLEL QUERY PARALLEL 64")
         for feat_sql in feature_sqls:
             f_record = run_feature_record_query_with_conn(feat_sql, conn)
             feature_sql_jobs.append(f_record)
