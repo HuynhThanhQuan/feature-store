@@ -5,23 +5,36 @@ import gen_script, check_DB, gen_table, gen_feature, util, ft_dependency
 import argparse
 import sys
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import traceback
 
 
-def read_RPT_DT():
+
+def read_config():
+    # Auto define env-varibles
+    EXC_TMSP = datetime.now().strftime('%Y%m%d_%H%M%S')
+    
+    # Read config
     with open('./config/config.yaml', 'r') as file:
         config = yaml.safe_load(file)
-    if 'RPT_DT' in config:
-        RPT_DT = config['RPT_DT']
-    else:
-        current_date = datetime.date.today()
-        RPT_DT = current_date.strftime('%dd%mm%Y')
-    RPT_DT_TBL = RPT_DT.replace("-", "")
-    return {'RPT_DT': RPT_DT,
-            'RPT_DT_TBL': RPT_DT_TBL,
-            'config': config}
+    REPORT_DATE_cfg = config['REPORT_DATE']
+    request_cfg = REPORT_DATE_cfg['REQUEST']
+    req_type = request_cfg['TYPE']
+    req_dates = request_cfg['DATES']
+    # Auto translate request
+    if req_type == 'R':
+        req_dates = [datetime.strptime(i, '%d-%m-%Y') for i in req_dates]
+        min_date = min(req_dates)
+        max_date = max(req_dates)
+        req_dates = [(min_date + timedelta(days=x)).strftime('%d-%m-%Y') for x in range((max_date - min_date).days+1)]
+    return {
+        'config': config,
+        'REQUEST_REPORT_DATES': req_dates,
+        'EXECUTION_TIMESTAMP': EXC_TMSP
+    }
+        
+
 
 def configure_logging(response, log_level='INFO'):
     # Configure Logging
@@ -35,7 +48,7 @@ def configure_logging(response, log_level='INFO'):
     stdout_handler.setFormatter(log_format)
     stdout_handler.setLevel(log_level)
     
-    cur_time = datetime.now().strftime('%Y%m%d_%H%M%S')
+    cur_time = response['EXECUTION_TIMESTAMP']
     filename = f'./log/{cur_time}.log'
     file_handler = logging.FileHandler(filename)
     file_handler.setFormatter(log_format)
@@ -45,9 +58,7 @@ def configure_logging(response, log_level='INFO'):
     logger.setLevel(logging.DEBUG)
     logger.addHandler(stdout_handler)
     logger.addHandler(file_handler)
-    return {
-        'EXECUTION_TIMESTAMP': cur_time
-    }
+    return {}
     
 def save_metadata(response):
     exc_time = response['EXECUTION_TIMESTAMP']
@@ -57,16 +68,22 @@ def save_metadata(response):
 
 @util.timeit
 def generate_features_report_date(response):
-    # Gen script o RPT_DT
+    """
+    1. Generate scripts: TMP tables, features
+    2. CREATE TABLE and INSERT INTO into TMP tables
+    3. Generate and INSERT INTO feature data
+    """
+    # Gen script of RPT_DT
     response.update(gen_script.gen_tmp_table_script(response))
     response.update(gen_script.gen_feature_script(response))
-    
     # Create & Insert data into TMP table
     response.update(check_DB.check_exists(response))
+    response.update(check_DB.drop_tables(response))
+    response.update(check_DB.check_exists(response))
     response.update(gen_table.create_empty_tmp_tables(response))
+    response.update(check_DB.check_exists(response))
     response.update(gen_table.insert_into_tmp_tables(response))
-    
-    # Gen features
+    # Gen and insert features
     response.update(gen_feature.run_feature_query(response))
 
 @util.timeit
@@ -102,13 +119,19 @@ def gen_feature_only(response):
     response.update(gen_script.gen_feature_script(response))
     response.update(gen_feature.run_feature_query(response))
 
+@util.timeit
+def gen_sql_script(response):
+    response.update(gen_script.gen_tmp_table_script(response))
+    response.update(gen_script.gen_feature_script(response))
+    response.update(gen_script.aggregate_sql_scripts(response))
+    
 @util.timeit    
 def test_new_func():
     logging.debug('Test new Function')
     util.my_func()
     
 @util.timeit    
-def visualize_feature_dependency(response):
+def export_feature_dependency(response):
     response.update(ft_dependency.analyze(response))
     
 if __name__ == '__main__':
@@ -121,58 +144,72 @@ if __name__ == '__main__':
                         3. Check existing tables on DB
                         4. Generate scripts
                         5. Run CREATE TMP tables (empty)
-                        6. Run INSERT data INTO TMP tables
-                        7. Run GENERATE Features and insert into Feature Store
+                        6. Run INSERT INTO TMP tables
+                        7. Run INSERT INTO Features Store
                         8. Test new function
                         9. Analyze Feature and Table Dependency
+                        10. Aggregate into 1 single script
     """)
     parser.add_argument('--log', choices=['DEBUG','INFO', 'WARNING', 'ERROR', 'CRITICAL'], default='INFO', help='Set the logging level')
     args = parser.parse_args()
     
     # Read Config and Logging
-    response = read_RPT_DT()
+    response = read_config()
     response.update(configure_logging(response, args.log))
     
-    logging.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-    logging.info('==================================')
-    logging.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    logging.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    logging.info('======================================================================================================')
+    logging.info('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    e_start = datetime.now()
+    logging.info(f'Start Execution Time: {e_start}')
+    # Report a list of requested dates
+    REQUEST_REPORT_DATES = response['REQUEST_REPORT_DATES']
+    for RPT_DT in REQUEST_REPORT_DATES:
+        RPT_DT_TBL = RPT_DT.replace("-", "")
+        response['RPT_DT'] = RPT_DT
+        response['RPT_DT_TBL'] = RPT_DT_TBL
+        logging.info(f'>>>---PREPARING REPORT DATE {RPT_DT}--->>>')
     
-    exc_start = datetime.now()
-    logging.info(f'Execution time: {exc_start}')
-    
-    
-    # Job
-    try:
-        if args.job == 0:
-            logging.info('Hello')
-        elif args.job == 1:
-            generate_features_report_date(response)
-        elif args.job == 2:
-            drop_tables_report_date(response)
-        elif args.job == 3:
-            check_existing_tmp_tables(response)
-        elif args.job == 4:
-            generate_scripts(response)
-        elif args.job == 5:
-            create_empty_tmp_tables(response)
-        elif args.job == 6:
-            insert_into_tmp_tables(response)
-        elif args.job == 7:
-            gen_feature_only(response)
-        elif args.job == 8:
-            test_new_func()
-        elif args.job == 9:
-            visualize_feature_dependency(response)
-        else:
-            logging.info('Welcome and Goodbye')
-    except Exception as er:
-        logging.error(er)
-        logging.error(traceback.format_exc())
-    finally:
-        save_metadata(response)
-    exc_end = datetime.now()
-    logging.info(f'Job Main End {exc_end} took {exc_end - exc_start}')
-    
-    logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
-    logging.info('==================================')
-    logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+        t_start = datetime.now()
+        logging.info(f'>> Start   : {t_start}')
+
+        # Job
+        try:
+            if args.job == 0:
+                logging.info('Hello')
+            elif args.job == 1:
+                generate_features_report_date(response)
+            elif args.job == 2:
+                drop_tables_report_date(response)
+            elif args.job == 3:
+                check_existing_tmp_tables(response)
+            elif args.job == 4:
+                generate_scripts(response)
+            elif args.job == 5:
+                create_empty_tmp_tables(response)
+            elif args.job == 6:
+                insert_into_tmp_tables(response)
+            elif args.job == 7:
+                gen_feature_only(response)
+            elif args.job == 8:
+                test_new_func()
+            elif args.job == 9:
+                export_feature_dependency(response)
+            elif args.job == 10:
+                gen_sql_script(response)
+            else:
+                logging.info('Welcome and Goodbye')
+        except Exception as er:
+            logging.error(er)
+            logging.error(traceback.format_exc())
+        finally:
+            save_metadata(response)
+        t_end = datetime.now()
+        logging.info(f'>> Finished: {t_end} \t\t  took {t_end - t_start}')
+        logging.info(f'<<<---FINISHED REPORT DATE {RPT_DT}----<<<\n')
+        
+    e_end = datetime.now()
+    logging.info(f'Main Execution end at: {e_end} took {e_end - e_start}')
+    logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<')
+    logging.info('======================================================================================================')
+    logging.info('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<\n\n\n')

@@ -6,9 +6,11 @@ import datetime
 import util
 
 logger = logging.getLogger(__name__)
+SQL_TABLE_FOLDER = './sql/table'
+
 
 def read_sql_and_execute(table_name, folder_path):
-    conn,cur= oraDB.connect()
+    conn, cur= oraDB.connect()
     try:
         k_filepath = os.path.join(folder_path, table_name + '.sql')
         with open(k_filepath, 'r') as f:
@@ -31,7 +33,7 @@ def create_empty_tmp_tables(response):
     RPT_DT = response['RPT_DT']
     RPT_DT_TBL = response['RPT_DT_TBL']
     table_check = response['TABLE_CHECK']
-    folder_path = os.path.join(config['SQL_TABLE_FOLDER'], 'report_date', RPT_DT, 'create')
+    folder_path = os.path.join(SQL_TABLE_FOLDER, 'report_date', RPT_DT, 'create')
     
     logger.info('Create empty TMP tables')
     
@@ -58,7 +60,7 @@ def insert_into_tmp_tables(response):
     RPT_DT = response['RPT_DT']
     RPT_DT_TBL = response['RPT_DT_TBL']
     table_check = response['TABLE_CHECK']
-    folder_path = os.path.join(config['SQL_TABLE_FOLDER'], 'report_date', RPT_DT, 'insert')
+    folder_path = os.path.join(SQL_TABLE_FOLDER, 'report_date', RPT_DT, 'insert')
     
     logger.info('Insert into TMP tables')
     

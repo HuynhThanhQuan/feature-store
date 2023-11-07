@@ -28,11 +28,13 @@ def analyze(response):
         logger.info('Finding latest valid metadata file')
         last_valid_meta_fn, data = None, None
         for i in dec_metadata_files:
-            with open (os.path.join(metadata_folder, i), 'r') as f:
-                data = json.load(f)
-                if 'FEATURE_SQL_JOBS' in data.keys():
-                    last_valid_meta_fn = i
-                    break
+            metadata_fp = os.path.join(metadata_folder, i)
+            if os.path.isfile(metadata_fp):
+                with open(metadata_fp, 'r') as f:
+                    data = json.load(f)
+                    if 'FEATURE_SQL_JOBS' in data.keys() and data['RPT_DT'] == response['RPT_DT']:
+                        last_valid_meta_fn = i
+                        break
         if last_valid_meta_fn and data:
             # Collect 
             logger.info(f'Analyze latest metadata file {last_valid_meta_fn}')

@@ -7,6 +7,7 @@ import util
 
 logger = logging.getLogger(__name__)
 
+
 @util.timeit
 def check_exists(response):
     logger.info('Checking existing TMP tables')
@@ -45,6 +46,7 @@ def drop_tables(response):
         try:
             if v:
                 cur.execute(f"DROP TABLE {k}")
+                cur.execute('COMMIT')
                 drop_tables.append(k)
                 logging.info(f'Dropped table {k}')
         except cx_Oracle.DatabaseError as e:
