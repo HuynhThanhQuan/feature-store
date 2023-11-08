@@ -1,0 +1,54 @@
+/*
+Feature Name: CARD_CREDIT_CASH_RATIO_30_6M
+Derived From: DW_CARD_TRANSACTION_FCT, CINS_TMP_CUSTOMER_{RPT_DT_TBL}, DATA_RPT_CARD_493
+*/
+INSERT INTO {TBL_NM} 
+WITH A AS
+  (SELECT CUSTOMER_CDE,
+          SUM(AMT_BILL) AS AMT_BILL
+   FROM
+     (SELECT CUSTOMER_CDE ,
+             ABS(AMT_BILL) AS AMT_BILL
+      FROM DW_ANALYTICS.DW_CARD_TRANSACTION_FCT
+      WHERE UPPER(TXN_OM_CDE) IN ('PATM',
+                                  'PAUTO',
+                                  'PBRCHCH',
+                                  'PMTQRV',
+                                  'PMTCUP',
+                                  'PMTIPM',
+                                  'PMTBII')
+        AND ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) <= PROCESS_DT
+        AND PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
+        AND SUBSTR(CARD_CDE, 1, 1) = '3'
+        AND CUSTOMER_CDE IN
+          (SELECT CUSTOMER_CDE
+           FROM CINS_TMP_CUSTOMER_{RPT_DT_TBL})
+        AND CUSTOMER_CDE <> '1'
+        AND CUSTOMER_CDE <> '-1'
+        AND CUSTOMER_CDE NOT LIKE '%#%' )
+   GROUP BY CUSTOMER_CDE),
+                          B AS
+  (SELECT CUSTOMER_CDE ,
+          SUM(TT_ORIGINAL_BALANCE) AS TT_ORIGINAL_BALANCE
+   FROM DW_ANALYTICS.DATA_RPT_CARD_493
+   WHERE CUSTOMER_CDE IN
+       (SELECT CUSTOMER_CDE
+        FROM CINS_TMP_CUSTOMER_{RPT_DT_TBL})
+     AND SUBSTR(CARD_CDE, 1, 1) = '3'
+     AND ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) <= PROCESS_DT
+     AND PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
+     AND CUSTOMER_CDE <> '1'
+     AND CUSTOMER_CDE <> '-1'
+     AND CUSTOMER_CDE NOT LIKE '%#%'
+   GROUP BY CUSTOMER_CDE)
+SELECT A.CUSTOMER_CDE,
+       'CARD_CREDIT_CASH_RATIO_30_6M' AS FTR_NM,
+       CASE
+           WHEN A.AMT_BILL/B.TT_ORIGINAL_BALANCE > 0.3
+                AND B.TT_ORIGINAL_BALANCE <> 0 THEN 1
+           ELSE 0
+       END AS FTR_VAL,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
+       CURRENT_TIMESTAMP AS ADD_TSTP
+FROM A A
+LEFT JOIN B B ON A.CUSTOMER_CDE = B.CUSTOMER_CDE

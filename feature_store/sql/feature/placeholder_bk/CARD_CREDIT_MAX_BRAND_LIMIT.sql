@@ -1,0 +1,52 @@
+/*
+Feature Name: CARD_CREDIT_MAX_BRAND_LIMIT
+Derived From: DW_CARD_MASTER_DIM, CINS_TMP_DATA_RPT_CARD_{RPT_DT_TBL}
+*/
+INSERT INTO {TBL_NM} 
+WITH T AS
+  (SELECT A.CUSTOMER_CDE,
+          A.CARD_CDE,
+          A.CREDIT_BRAND,
+          B.TT_CARD_LIMIT
+   FROM
+     (SELECT CUSTOMER_CDE,
+             CARD_CDE,
+             CASE
+                 WHEN SUBSTR(CARDHOLDER_NO, 1, 1) = '4' THEN 'VISA'
+                 WHEN SUBSTR(CARDHOLDER_NO, 1, 1) = '3' THEN 'JCB'
+                 WHEN SUBSTR(CARDHOLDER_NO, 1, 1) = '5' THEN 'MASTERCARD'
+                 WHEN SUBSTR(CARDHOLDER_NO, 1, 1) = '6' THEN 'UNION'
+                 WHEN (SUBSTR(CARDHOLDER_NO, 1) = '9'
+                       OR SUBSTR(CARDHOLDER_NO, 1) = '2') THEN 'NAPAS'
+                 ELSE 'OTHER'
+             END AS CREDIT_BRAND,
+             ROW_NUMBER() OVER (PARTITION BY CUSTOMER_CDE,
+                                             CARD_CDE
+                                ORDER BY UPDATE_DT DESC) RN
+      FROM DW_ANALYTICS.DW_CARD_MASTER_DIM
+      WHERE SUBSTR(CARD_CDE, 1, 1) = '3'
+        AND PLASTIC_CDE = ' '
+        AND STATUS_CDE = ' ' ) A
+   JOIN
+     (SELECT CUSTOMER_CDE,
+             CARD_CDE,
+             MAX(TT_CARD_LIMIT) AS TT_CARD_LIMIT
+      FROM CINS_TMP_DATA_RPT_CARD_{RPT_DT_TBL}
+      GROUP BY CUSTOMER_CDE,
+               CARD_CDE) B ON A.CUSTOMER_CDE = B.CUSTOMER_CDE
+   AND A.CARD_CDE = B.CARD_CDE
+   WHERE A.RN = 1 )
+SELECT CUSTOMER_CDE,
+       'CARD_CREDIT_MAX_BRAND_LIMIT' AS FTR_NM,
+       CREDIT_BRAND AS FTR_VAL,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
+       CURRENT_TIMESTAMP AS ADD_TSTP
+FROM
+  (SELECT CUSTOMER_CDE,
+          CREDIT_BRAND,
+          ROW_NUMBER() OVER(PARTITION BY CUSTOMER_CDE
+                            ORDER BY TT_CARD_LIMIT DESC) RN
+   FROM T
+   WHERE CUSTOMER_CDE <> '1'
+     AND CUSTOMER_CDE <> '-1' )
+WHERE RN = 1

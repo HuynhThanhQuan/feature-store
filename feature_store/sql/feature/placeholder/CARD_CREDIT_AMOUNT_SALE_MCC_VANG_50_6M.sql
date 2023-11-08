@@ -1,0 +1,32 @@
+/*
+Feature Name: CARD_CREDIT_AMOUNT_SALE_MCC_VANG_50_6M
+Derived From: CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
+*/
+INSERT INTO {TBL_NM} 
+WITH A AS
+  (SELECT CUSTOMER_CDE,
+          SUM(CASE
+                  WHEN (TXN_OL_CDE = 'C'
+                        OR TXN_OL_CDE = 'Z'
+                        OR TXN_OL_CDE = 'S') THEN AMT_BILL
+                  ELSE 0
+              END) AS AMOUNT_CASH,
+          SUM(CASE
+                  WHEN TXN_OL_CDE NOT IN ('C', 'Z', 'S')
+                       AND MCC_CDE IN ('7631', '5944') THEN AMT_BILL
+                  ELSE 0
+              END) AS AMOUNT_SALE_MCC_VANG
+   FROM CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
+   WHERE ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -6) <= PROCESS_DT
+     AND PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
+   GROUP BY CUSTOMER_CDE)
+SELECT CUSTOMER_CDE,
+       'CARD_CREDIT_AMOUNT_SALE_MCC_VANG_50_6M' AS FTR_NM,
+       CASE
+           WHEN (AMOUNT_CASH + AMOUNT_SALE_MCC_VANG) > 0
+                AND AMOUNT_SALE_MCC_VANG/(AMOUNT_CASH + AMOUNT_SALE_MCC_VANG) < 0.5 THEN 1
+           ELSE 0
+       END AS FTR_VAL,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
+       CURRENT_TIMESTAMP AS ADD_TSTP
+FROM A

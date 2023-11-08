@@ -3,6 +3,7 @@ from functools import wraps
 import logging
 import os
 from oraDB import oraDB
+import gen_feature
 
 logger = logging.getLogger(__name__)
 
@@ -54,12 +55,26 @@ def get_numrow_from_insert():
 
 
 def split_each_feature_into_a_file():
-    feature_fp = '../sql/feature/placeholder/'
+    feature_fp = './sql/feature/placeholder/'
     unstructured_fp = os.path.join(feature_fp, 'unstructured')
     structured_fp = os.path.join(feature_fp, 'structured')
     
-
+    for fp in [unstructured_fp, structured_fp]:
+        for file in os.listdir(fp):
+            if file.startswith('.'):
+                continue
+            with open(os.path.join(fp, file), 'r') as f:
+                content = f.read()
+                features = content.split(';')
+                print(f'File {file} has {len(features)} features')
+                for idx, feature in enumerate(features):
+                    description, feat_nms, derived_tables = gen_feature.read_ft_and_tbl_in_subquery(feature)
+                    if feat_nms and len(feat_nms) > 0:
+                        feat_nm = feat_nms[0]
+                        with open(os.path.join(feature_fp, f'{feat_nm}.sql'), 'w') as f:
+                            f.write(feature.strip())
+                    print(f'Feature {idx} is {feat_nm}')
     
 if __name__ == '__main__':    
     # get_numrow_from_insert()
-    print()
+    split_each_feature_into_a_file()

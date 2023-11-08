@@ -1,0 +1,45 @@
+/*
+Feature Name: CARD_CREDIT_UP_SELL_LABEL2_6M
+Derived From: CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
+*/
+INSERT INTO {TBL_NM}
+WITH A AS
+  (SELECT CUSTOMER_CDE,
+          PROCESS_DT,
+          ROUND(SUM(AMT_BILL)/COUNT(*), 2) AS TICKET_SIZE
+   FROM CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
+   WHERE ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -3) <= PROCESS_DT
+     AND PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')
+   GROUP BY CUSTOMER_CDE,
+            PROCESS_DT)
+SELECT B.CUSTOMER_CDE,
+       'CARD_CREDIT_UP_SELL_LABEL2_6M' AS FTR_NM,
+       CASE
+           WHEN (B.TICKET_SIZE_N0 > B.TICKET_SIZE_N1
+                 AND B.TICKET_SIZE_N1 > B.TICKET_SIZE_N2)
+                AND (B.TICKET_SIZE_N0 <> 0
+                     AND B.TICKET_SIZE_N1 <> 0
+                     AND B.TICKET_SIZE_N2 <> 0) THEN 1
+           ELSE 0
+       END AS FTR_VAL,
+       TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
+       CURRENT_TIMESTAMP AS ADD_TSTP
+FROM
+  (SELECT CUSTOMER_CDE,
+          SUM(CASE
+                  WHEN (ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -1) <= PROCESS_DT
+                        AND PROCESS_DT < TO_DATE('{RPT_DT}', 'DD-MM-YY')) THEN TICKET_SIZE
+                  ELSE 0
+              END) AS TICKET_SIZE_N0,
+          SUM(CASE
+                  WHEN (ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -2) <= PROCESS_DT
+                        AND PROCESS_DT < ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -1)) THEN TICKET_SIZE
+                  ELSE 0
+              END) AS TICKET_SIZE_N1,
+          SUM(CASE
+                  WHEN (ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -3) <= PROCESS_DT
+                        AND PROCESS_DT < ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -2)) THEN TICKET_SIZE
+                  ELSE 0
+              END) AS TICKET_SIZE_N2
+   FROM A
+   GROUP BY CUSTOMER_CDE) B
