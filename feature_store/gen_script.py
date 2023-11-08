@@ -155,7 +155,7 @@ def aggregate_sql_scripts(response):
             with open(tbl_fp, 'r') as f:
                 content = f.read().strip()
                 create_scripts.append(content)
-    create_scripts = ';\n\n\n'.join(create_scripts)
+    create_scripts = ';\n\n\nCOMMIT;\n\n\n'.join(create_scripts)
     logger.debug(f'Create scripts {create_scripts}')
     
     # Insert TMP table script
@@ -185,7 +185,7 @@ def aggregate_sql_scripts(response):
             with open(tbl_fp, 'r') as f:
                 content = f.read().strip()
                 insert_scripts.append(content)
-    insert_scripts = ';\n\n\n'.join(insert_scripts)
+    insert_scripts = ';\n\n\nCOMMIT;\n\n\n'.join(insert_scripts)
     logger.debug(f'Insert scripts {insert_scripts}')
     
     # Aggregate INSERT feature scripts 
@@ -196,7 +196,7 @@ def aggregate_sql_scripts(response):
             with open(tbl_fp, 'r') as f:
                 content = f.read().strip()
                 unstructured_scripts.append(content)
-    unstructured_scripts = ';\n\n\n'.join(unstructured_scripts)
+    unstructured_scripts = ';\n\n\nCOMMIT;\n\n\n'.join(unstructured_scripts)
     logger.debug(f'Unstructured feature scripts {unstructured_scripts}')
     
     structured_scripts = []
@@ -206,12 +206,12 @@ def aggregate_sql_scripts(response):
             with open(tbl_fp, 'r') as f:
                 content = f.read().strip()
                 structured_scripts.append(content)
-    structured_scripts = ';\n\n\n'.join(structured_scripts)
+    structured_scripts = ';\n\n\nCOMMIT;\n\n\n'.join(structured_scripts)
     logger.debug(f'Structured feature scripts {structured_scripts}')
     
-    agg_scripts = "\n" + create_scripts + ";\n\n\n" 
-    agg_scripts += insert_scripts + ";\n\n\n" 
-    agg_scripts += unstructured_scripts + "\n\n\n" 
+    agg_scripts = "\n" + create_scripts + ';\n\n\nCOMMIT;\n\n\n'
+    agg_scripts += insert_scripts + ';\n\n\nCOMMIT;\n\n\n'
+    agg_scripts += unstructured_scripts + ';\n\n\nCOMMIT;\n\n\n'
     agg_scripts += structured_scripts
     agg_scripts = agg_scripts.strip()
     

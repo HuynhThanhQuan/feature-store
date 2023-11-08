@@ -1,6 +1,7 @@
 import time
 from functools import wraps
 import logging
+import os
 from oraDB import oraDB
 
 logger = logging.getLogger(__name__)
@@ -50,6 +51,15 @@ def get_numrow_from_insert():
     conn.commit()
     if result is not None:
         print(result)
+
+
+def split_each_feature_into_a_file():
+    feature_fp = '../sql/feature/placeholder/'
+    unstructured_fp = os.path.join(feature_fp, 'unstructured')
+    structured_fp = os.path.join(feature_fp, 'structured')
+    
+
     
 if __name__ == '__main__':    
-    get_numrow_from_insert()
+    # get_numrow_from_insert()
+    print()
