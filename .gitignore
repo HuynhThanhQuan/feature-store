@@ -1,10 +1,12 @@
 .git-credentials
 **/.ipynb_checkpoints
 **/__pycache__
-**/log
-**/metadata
-**/output
+**/log/**
+**/metadata/**
+**/output/**
 .vscode
 **.tar
 sql/table/report_date/*
 sql/feature/report_date/*
+
+!**/.gitkeep
