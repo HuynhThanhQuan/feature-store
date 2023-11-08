@@ -212,7 +212,7 @@ def aggregate_sql_scripts(response):
     agg_scripts = "\n" + create_scripts + ';\n\n\nCOMMIT;\n\n\n'
     agg_scripts += insert_scripts + ';\n\n\nCOMMIT;\n\n\n'
     agg_scripts += unstructured_scripts + ';\n\n\nCOMMIT;\n\n\n'
-    agg_scripts += structured_scripts
+    agg_scripts += structured_scripts + ';\n\n\nCOMMIT;\n\n\n'
     agg_scripts = agg_scripts.strip()
     
     logger.debug(f'Final aggregated scripts {agg_scripts}')
