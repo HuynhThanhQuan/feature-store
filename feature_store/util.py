@@ -4,6 +4,7 @@ import logging
 import os
 from oraDB import oraDB
 import gen_feature
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -25,6 +26,8 @@ def my_func(n=100):
         pass
     
 def get_numrow_from_insert():
+    # Comment: C
+
     conn, cur= oraDB.connect()
     
     # Check exisiting table
@@ -74,7 +77,111 @@ def split_each_feature_into_a_file():
                         with open(os.path.join(feature_fp, f'{feat_nm}.sql'), 'w') as f:
                             f.write(feature.strip())
                     print(f'Feature {idx} is {feat_nm}')
+
+
+def generate_test_scripts():
+    # tables = []
+    # features = ['CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M']
+    
+    tables = [
+    'CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_TMP_CUSTOMER_STATUS'
+    ]
+
+    features = [
+    'REACTIVATED', 'INACTIVE', 'CASA_INACTIVE', 'EB_MBIB_INACTIVE', 'CARD_CREDIT_INACTIVE','EB_SACOMPAY_INACTIVE', 'AGE', 'GEN_GRP', 'PROFESSION', 'LIFE_STG','CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M'
+    ]
+
+    sel_date = '11-06-2023'
+    output_dev = './sql/script/FS_dev.sql'
+    output_prod = './sql/script/FS_prod.sql'
+    create_tbl_fd = './sql/table/placeholder/create'
+    insert_tbl_fd = './sql/table/placeholder/insert'
+    feat_official_fd = './sql/feature/placeholder/official'
+    tbl_nm = 'CINS_FEATURE_STORE_V2'
+    sel_date_tbl = sel_date.replace('-','')
+
+
+    commit_ck = ';\n\n\nCOMMIT;\n\n\n'
+    
+    scripts = []
+    # Read CREATE & INSERT INTO table scripts first
+    for t in tables:
+        with open(os.path.join(create_tbl_fd, t + '.sql'),'r') as f:
+            create_script = f.read().strip()
+            if create_script.endswith(';'):
+                id = create_script.rfind(';')
+                create_script = create_script[:id]
+        scripts.append(create_script)
+        
+    for t in tables:
+        with open(os.path.join(insert_tbl_fd, t + '.sql'),'r') as f:
+            insert_script = f.read().strip()
+            if insert_script.endswith(';'):
+                id = insert_script.rfind(';')
+                insert_script = insert_script[:id]
+        scripts.append(insert_script)
+
+    # Read Feature
+    for f in features:
+        with open(os.path.join(feat_official_fd, f + '.sql'),'r') as f:
+            feat_script = f.read().strip()
+            if feat_script.endswith(';'):
+                id = feat_script.rfind(';')
+                feat_script = feat_script[:id]
+        scripts.append(feat_script)
+    
+    # Aggregated
+    final_script = commit_ck.join(scripts).strip()
+    
+
+    # Replace TBL_NM, RPT_DT and RPT_DT_TBL
+    final_script = final_script.replace('{TBL_NM}', f'{tbl_nm}')
+    final_script = final_script.replace('{RPT_DT}', f'{sel_date}')
+    final_script = final_script.replace('{RPT_DT_TBL}', f'{sel_date_tbl}')
+
+    # Post-processing
+    if not final_script.strip().endswith(';'):
+        final_script += ';'
+    final_script_prod = final_script.replace('DW_ANALYTICS', 'DWPROD')
+
+    #Output_dev
+    with open(output_dev, 'w') as f:
+        f.writelines(final_script)
+    #Output_prod
+    with open(output_prod, 'w') as f:
+        f.writelines(final_script_prod)
+
+    print('Done')
+
+
+def get_backfill_info():
+    def extract_key_values(query):
+        # print(query)
+        description = re.findall(r'/\*(.*?)\*/',query, re.DOTALL)
+        features, derived_tables = None, None
+        if description and len(description) > 0:
+            description = description[0].strip()
+            comps = description.split('\n')
+            print(comps)
+            if len(comps) == 2:
+                features = comps[0].replace('Feature Name:', '').strip().split(',')
+                features = [i.strip() for i in features]
+                derived_tables = comps[1].replace('Derived From:','').strip().split(',')
+                derived_tables = [i.strip() for i in derived_tables]
+        return description, features, derived_tables
+
+
+    path = './sql/script/FS_prod.sql'
+    with open(path,'r') as f:
+        content = f.read()
+
+    subs = content.split('COMMIT;')
+    subs = [s.strip() for s in subs]
+    sample = subs[-1]
+    print(extract_key_values(sample))
     
 if __name__ == '__main__':    
     # get_numrow_from_insert()
-    split_each_feature_into_a_file()
+    # split_each_feature_into_a_file()
+    # generate_test_scripts()
+    get_backfill_info()
