@@ -5,6 +5,7 @@ import os
 from oraDB import oraDB
 import gen_feature
 import re
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -26,8 +27,6 @@ def my_func(n=100):
         pass
     
 def get_numrow_from_insert():
-    # Comment: C
-
     conn, cur= oraDB.connect()
     
     # Check exisiting table
@@ -154,22 +153,22 @@ def generate_test_scripts():
     print('Done')
 
 
+def generate_backfill_report(data):
+    
+
+
 def get_backfill_info():
     def extract_key_values(query):
         # print(query)
         description = re.findall(r'/\*(.*?)\*/',query, re.DOTALL)
-        features, derived_tables = None, None
         if description and len(description) > 0:
             description = description[0].strip()
-            comps = description.split('\n')
-            print(comps)
-            if len(comps) == 2:
-                features = comps[0].replace('Feature Name:', '').strip().split(',')
-                features = [i.strip() for i in features]
-                derived_tables = comps[1].replace('Derived From:','').strip().split(',')
-                derived_tables = [i.strip() for i in derived_tables]
-        return description, features, derived_tables
-
+            try:
+                data = yaml.safe_load(description)
+                if data:
+                    generate_backfill_report(data)
+            except yaml.YAMLError as exc:
+                print(exc)
 
     path = './sql/script/FS_prod.sql'
     with open(path,'r') as f:
@@ -183,5 +182,5 @@ def get_backfill_info():
 if __name__ == '__main__':    
     # get_numrow_from_insert()
     # split_each_feature_into_a_file()
-    # generate_test_scripts()
+    generate_test_scripts()
     get_backfill_info()
