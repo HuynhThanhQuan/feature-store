@@ -154,8 +154,19 @@ def generate_test_scripts():
 
 
 def generate_backfill_report(data):
-    
-
+    grouped = {}
+    for item in data:
+        derived_from = item.get('Derived From', {})
+        for table, columns in derived_from.items():
+            if table not in grouped:
+                grouped[table] = []
+            if isinstance(columns, list):
+                grouped[table].extend(columns)
+            else:
+                grouped[table].append(columns)
+    for table, columns in grouped.items():
+        grouped[table] = list(set(columns))
+    return grouped
 
 def get_backfill_info():
     def extract_key_values(query):
@@ -165,8 +176,7 @@ def get_backfill_info():
             description = description[0].strip()
             try:
                 data = yaml.safe_load(description)
-                if data:
-                    generate_backfill_report(data)
+                return data
             except yaml.YAMLError as exc:
                 print(exc)
 
@@ -176,8 +186,27 @@ def get_backfill_info():
 
     subs = content.split('COMMIT;')
     subs = [s.strip() for s in subs]
-    sample = subs[-1]
-    print(extract_key_values(sample))
+    yaml_infos = []
+    for sub in subs:
+        data = extract_key_values(sub)
+        if data:
+            yaml_infos.append(data)
+    # print(yaml_infos)
+    groups = generate_backfill_report(yaml_infos)
+    for table, columns in groups.items():
+        print(f'Table: {table.split(".")[-1]}')
+        for column in columns:
+            print(f'{column}')
+        print('----------------------')
+
+
+    for table, columns in groups.items():
+        if 'CINS' in table:
+            continue
+        column_str = ', '.join(columns)
+        query = f"SELECT {column_str} FROM {table}"
+        print(query)
+
     
 if __name__ == '__main__':    
     # get_numrow_from_insert()
