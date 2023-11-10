@@ -130,7 +130,11 @@ def generate_test_scripts():
         scripts.append(feat_script)
     
     # Aggregated
-    final_script = commit_ck.join(scripts).strip()
+    final_script = commit_ck.join(scripts)
+
+    final_script += commit_ck
+
+    final_script = final_script.strip()
     
 
     # Replace TBL_NM, RPT_DT and RPT_DT_TBL
