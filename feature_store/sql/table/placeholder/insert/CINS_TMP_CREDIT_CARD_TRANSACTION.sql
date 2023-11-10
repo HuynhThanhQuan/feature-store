@@ -1,52 +1,41 @@
+/*
+Table Name: CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}
+Derived From: 
+    DW_ANALYTICS.DW_CARD_TRANSACTION_FCT:
+        - CUSTOMER_CDE
+        - CARD_CDE
+        - PROCESS_DT
+        - APPROVAL_CDE
+        - RETRVL_REFNO
+        - AMT_BILL
+        - ACQ_CNTRY_CDE
+        - MERCHANT_CDE
+        - TXN_CURR_CDE
+        - BILL_CURR_CDE
+        - PRODUCT_CDE
+        - MCC_CDE
+        - TXN_OL_CDE
+        - TXN_OM_CDE
+        - AMT_FEE
+        - TRAN_STATUS
+        - COMPANY_KEY
+        - SUB_SECTOR_CDE
+    CINS_TMP_CUSTOMER_{RPT_DT_TBL}:
+        - CUSTOMER_CDE
+*/
 INSERT INTO CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL} 
 SELECT 
-    CUSTOMER_CDE, 
-    PROCESS_DT, 
-    APPROVAL_CDE, 
-    RETRVL_REFNO, 
-    AMT_BILL, 
-    ACQ_CNTRY_CDE, 
-    MERCHANT_CDE, 
-    TXN_CURR_CDE, 
-    BILL_CURR_CDE, 
-    PRODUCT_CDE, 
-    TXN_OL_CDE, 
-    MCC_CDE, 
-    TXN_OM_CDE, 
-    AMT_FEE
+    CUSTOMER_CDE, PROCESS_DT, APPROVAL_CDE, RETRVL_REFNO, AMT_BILL, ACQ_CNTRY_CDE, MERCHANT_CDE, TXN_CURR_CDE, BILL_CURR_CDE, PRODUCT_CDE, TXN_OL_CDE, MCC_CDE, TXN_OM_CDE, AMT_FEE
 FROM (
     SELECT 
         A.*,
-        ROW_NUMBER() OVER (
-            PARTITION BY 
-                CUSTOMER_CDE, 
-                CARD_CDE, 
-                PROCESS_DT, 
-                APPROVAL_CDE, 
-                RETRVL_REFNO 
-            ORDER BY NULL
-        ) RN
+        ROW_NUMBER() OVER (PARTITION BY CUSTOMER_CDE, CARD_CDE, PROCESS_DT, APPROVAL_CDE, RETRVL_REFNO ORDER BY NULL) RN
     FROM (
         SELECT 
-            T.CUSTOMER_CDE, 
-            T.CARD_CDE, 
-            T.PROCESS_DT, 
-            T.APPROVAL_CDE, 
-            T.RETRVL_REFNO, 
-            T.AMT_BILL, 
-            T.ACQ_CNTRY_CDE, 
-            T.MERCHANT_CDE, 
-            T.TXN_CURR_CDE, 
-            T.BILL_CURR_CDE, 
-            T.PRODUCT_CDE, 
-            T.MCC_CDE, 
-            T.TXN_OL_CDE, 
-            T.TXN_OM_CDE, 
-            T.AMT_FEE
+            T.CUSTOMER_CDE, T.CARD_CDE, T.PROCESS_DT, T.APPROVAL_CDE, T.RETRVL_REFNO, T.AMT_BILL, T.ACQ_CNTRY_CDE, T.MERCHANT_CDE, T.TXN_CURR_CDE, T.BILL_CURR_CDE, T.PRODUCT_CDE, T.MCC_CDE, T.TXN_OL_CDE, T.TXN_OM_CDE, T.AMT_FEE
         FROM 
             DW_ANALYTICS.DW_CARD_TRANSACTION_FCT T
-            JOIN CINS_TMP_CUSTOMER_{RPT_DT_TBL} C 
-                ON T.CUSTOMER_CDE=C.CUSTOMER_CDE
+            JOIN CINS_TMP_CUSTOMER_{RPT_DT_TBL} C ON T.CUSTOMER_CDE=C.CUSTOMER_CDE
         WHERE 
             T.PROCESS_DT >= ADD_MONTHS(TO_DATE('{RPT_DT}', 'DD-MM-YY'), -36)
             AND T.PROCESS_DT <= TO_DATE('{RPT_DT}', 'DD-MM-YY')
