@@ -79,8 +79,10 @@ def split_each_feature_into_a_file():
 
 
 def generate_test_scripts():
+    tables, features = [], []
+
     tables = ['CINS_2M_PART', 'CINS_TMP_LST']
-    features = ['CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M']
+    # features = ['CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M']
     
     # tables = [
     # 'CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CREDIT_CARD_LOAN_6M', 'CINS_TMP_CREDIT_CARD_TRANSACTION', 'CINS_TMP_DATA_RPT_CARD', 'CINS_TMP_DATA_RPT_LOAN', 'CINS_TMP_EB_MB_CROSSELL'
@@ -91,13 +93,13 @@ def generate_test_scripts():
     # ]
 
     sel_date = '11-06-2023'
-    output_dev = './sql/script/FS_dev.sql'
-    output_prod = './sql/script/FS_prod.sql'
+    sel_date_tbl = sel_date.replace('-','')
+    output_dev = f'./sql/script/FS_dev_{sel_date_tbl}.sql'
+    output_prod = f'./sql/script/FS_prod_{sel_date_tbl}.sql'
     create_tbl_fd = './sql/table/placeholder/create'
     insert_tbl_fd = './sql/table/placeholder/insert'
     feat_official_fd = './sql/feature/placeholder/official'
     tbl_nm = 'CINS_FEATURE_STORE_V2'
-    sel_date_tbl = sel_date.replace('-','')
 
 
     commit_ck = ';\n\n\nCOMMIT;\n\n\n'
