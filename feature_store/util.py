@@ -88,14 +88,14 @@ def generate_test_scripts():
     
     # Full
     tables = [
-    'CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CREDIT_CARD_LOAN_6M', 'CINS_TMP_CREDIT_CARD_TRANSACTION', 'CINS_TMP_DATA_RPT_CARD', 'CINS_TMP_DATA_RPT_LOAN', 'CINS_TMP_EB_MB_CROSSELL', 'CINS_2M_PART', 'CINS_TMP_LST'
+    'CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CREDIT_CARD_LOAN_6M', 'CINS_TMP_CREDIT_CARD_TRANSACTION', 'CINS_TMP_DATA_RPT_CARD', 'CINS_TMP_DATA_RPT_LOAN', 'CINS_TMP_EB_MB_CROSSELL', 'CINS_2M_PART', 'CINS_TMP_LST', 'CINS_FEATURE_STORE_V2'
     ]
     features = [
     'REACTIVATED', 'INACTIVE', 'CASA_INACTIVE', 'EB_MBIB_INACTIVE', 'CARD_CREDIT_INACTIVE','EB_SACOMPAY_INACTIVE', 'AGE', 'GEN_GRP', 'PROFESSION', 'LIFE_STG','CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M'
     ]
 
     # Config
-    sel_date = '01-10-2023'
+    sel_date = '11-06-2023'
     sel_date_tbl = sel_date.replace('-','')
     output_dev = f'./sql/script/FS_dev_{sel_date_tbl}.sql'
     output_prod = f'./sql/script/FS_prod_{sel_date_tbl}.sql'
@@ -111,7 +111,7 @@ def generate_test_scripts():
     scripts = []
     # Drop tables first
     for t in tables:
-        if t not in ['CINS_2M_PART']:
+        if t not in ['CINS_2M_PART', 'CINS_FEATURE_STORE_V2']:
             drop_sql = f"DROP TABLE {t}_{sel_date_tbl}"
         else:
             drop_sql = f"DROP TABLE {t}"
@@ -120,29 +120,35 @@ def generate_test_scripts():
 
     # Read CREATE & INSERT INTO table scripts first
     for t in tables:
-        with open(os.path.join(create_tbl_fd, t + '.sql'),'r') as f:
-            create_script = f.read().strip()
-            if create_script.endswith(';'):
-                id = create_script.rfind(';')
-                create_script = create_script[:id]
-        scripts.append(create_script)
+        create_sql_fp = os.path.join(create_tbl_fd, t + '.sql')
+        if os.path.exists(create_sql_fp):
+            with open(create_sql_fp,'r') as f:
+                create_script = f.read().strip()
+                if create_script.endswith(';'):
+                    id = create_script.rfind(';')
+                    create_script = create_script[:id]
+            scripts.append(create_script)
         
     for t in tables:
-        with open(os.path.join(insert_tbl_fd, t + '.sql'),'r') as f:
-            insert_script = f.read().strip()
-            if insert_script.endswith(';'):
-                id = insert_script.rfind(';')
-                insert_script = insert_script[:id]
-        scripts.append(insert_script)
+        insert_sql_fp = os.path.join(insert_tbl_fd, t + '.sql')
+        if os.path.exists(insert_sql_fp):
+            with open(insert_sql_fp,'r') as f:
+                insert_script = f.read().strip()
+                if insert_script.endswith(';'):
+                    id = insert_script.rfind(';')
+                    insert_script = insert_script[:id]
+            scripts.append(insert_script)
 
     # Read Feature
     for f in features:
-        with open(os.path.join(feat_official_fd, f + '.sql'),'r') as f:
-            feat_script = f.read().strip()
-            if feat_script.endswith(';'):
-                id = feat_script.rfind(';')
-                feat_script = feat_script[:id]
-        scripts.append(feat_script)
+        feat_sql_fp = os.path.join(feat_official_fd, f + '.sql')
+        if os.path.exists(feat_sql_fp):
+            with open(feat_sql_fp,'r') as f:
+                feat_script = f.read().strip()
+                if feat_script.endswith(';'):
+                    id = feat_script.rfind(';')
+                    feat_script = feat_script[:id]
+            scripts.append(feat_script)
     
     # Aggregated
     final_script = commit_ck.join(scripts)
