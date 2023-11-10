@@ -1,5 +1,5 @@
 /*
-Table Name: CINS_TMP_CARD_DIM_{RPT_DT_TBL}
+Table Name: CINS_2M_PART
 Derived From: 
     DW_ANALYTICS.DWD_TOI_FCT: 
         - CUSTOMER_CDE

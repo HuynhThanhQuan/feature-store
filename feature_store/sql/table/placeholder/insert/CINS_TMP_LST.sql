@@ -1,5 +1,5 @@
 /*
-Table Name: CINS_TMP_CARD_DIM_{RPT_DT_TBL}
+Table Name: CINS_TMP_LST_{RPT_DT_TBL}
 Derived From: 
     CINS_TMP_CREDIT_CARD_TRANSACTION_{RPT_DT_TBL}: 
         - CUSTOMER_CDE
