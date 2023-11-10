@@ -79,20 +79,23 @@ def split_each_feature_into_a_file():
 
 
 def generate_test_scripts():
+    # Default
     tables, features = [], []
 
-    tables = ['CINS_2M_PART', 'CINS_TMP_LST']
+    # Test
+    # tables = ['CINS_2M_PART', 'CINS_TMP_LST']
     # features = ['CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M']
     
-    # tables = [
-    # 'CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CREDIT_CARD_LOAN_6M', 'CINS_TMP_CREDIT_CARD_TRANSACTION', 'CINS_TMP_DATA_RPT_CARD', 'CINS_TMP_DATA_RPT_LOAN', 'CINS_TMP_EB_MB_CROSSELL'
-    # ]
+    # Full
+    tables = [
+    'CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CREDIT_CARD_LOAN_6M', 'CINS_TMP_CREDIT_CARD_TRANSACTION', 'CINS_TMP_DATA_RPT_CARD', 'CINS_TMP_DATA_RPT_LOAN', 'CINS_TMP_EB_MB_CROSSELL', 'CINS_2M_PART', 'CINS_TMP_LST'
+    ]
+    features = [
+    'REACTIVATED', 'INACTIVE', 'CASA_INACTIVE', 'EB_MBIB_INACTIVE', 'CARD_CREDIT_INACTIVE','EB_SACOMPAY_INACTIVE', 'AGE', 'GEN_GRP', 'PROFESSION', 'LIFE_STG','CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M'
+    ]
 
-    # features = [
-    # 'REACTIVATED', 'INACTIVE', 'CASA_INACTIVE', 'EB_MBIB_INACTIVE', 'CARD_CREDIT_INACTIVE','EB_SACOMPAY_INACTIVE', 'AGE', 'GEN_GRP', 'PROFESSION', 'LIFE_STG','CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M'
-    # ]
-
-    sel_date = '11-06-2023'
+    # Config
+    sel_date = '01-10-2023'
     sel_date_tbl = sel_date.replace('-','')
     output_dev = f'./sql/script/FS_dev_{sel_date_tbl}.sql'
     output_prod = f'./sql/script/FS_prod_{sel_date_tbl}.sql'
@@ -104,7 +107,17 @@ def generate_test_scripts():
 
     commit_ck = ';\n\n\nCOMMIT;\n\n\n'
     
+    # Generate
     scripts = []
+    # Drop tables first
+    for t in tables:
+        if t not in ['CINS_2M_PART']:
+            drop_sql = f"DROP TABLE {t}_{sel_date_tbl}"
+        else:
+            drop_sql = f"DROP TABLE {t}"
+        scripts.append(drop_sql)
+
+
     # Read CREATE & INSERT INTO table scripts first
     for t in tables:
         with open(os.path.join(create_tbl_fd, t + '.sql'),'r') as f:
