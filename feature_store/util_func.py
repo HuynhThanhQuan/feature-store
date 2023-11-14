@@ -6,6 +6,8 @@ from oraDB import oraDB
 import gen_feature
 import re
 import yaml
+import re
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -232,9 +234,41 @@ def get_backfill_info():
         query = f"SELECT {column_str} FROM {table}"
         print(query)
 
+def extract_yaml_from_string(s):
+    pattern = r'/\*(.*?)\*/'
+    match = re.search(pattern, s, re.DOTALL)
+    if match:
+        yaml_str = match.group(1)
+        return yaml.safe_load(yaml_str)
+    else:
+        return None
+
+def gen_derived_feature_script():
+    base_fp = './sql/feature/placeholder/test_basefeat/base'
+    derived_fp = './sql/feature/placeholder/test_basefeat/derived'
+
+    features = ['CASA_TXN_AMT']
+    
+    for feature in features:
+        derived_scripts = []
+        feat_fp = os.path.join(base_fp, feature + '.sql')
+        with open(feat_fp, 'r') as f:
+            base_script = f.read()
+        desc_yaml = extract_yaml_from_string(base_script)
+        derived_format = desc_yaml.get('Derived By', {})
+        for agg in derived_format.get('Aggregations'):
+            for tw in derived_format.get('Time-Windows'):
+                derived_script = base_script.replace("{CAL}", agg)
+                derived_script = derived_script.replace("{TW}", tw)
+                derived_scripts.append(derived_script)
+                print(derived_script)
+        else:
+            print('No derived script')
+        
     
 if __name__ == '__main__':    
     # get_numrow_from_insert()
     # split_each_feature_into_a_file()
-    generate_test_scripts()
-    get_backfill_info()
+    # generate_test_scripts()
+    # get_backfill_info()
+    gen_derived_feature_script()
