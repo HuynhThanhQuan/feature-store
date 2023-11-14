@@ -1,6 +1,16 @@
 /*
 Feature Name: CASA_SUM_BAL_NOW
-Derived From: DW_DEPOSIT_FCT, CINS_TMP_CUSTOMER_{RPT_DT_TBL}
+Derived From: 
+    DW_DEPOSIT_FCT:
+        - ACTUAL_BAL_LCL
+        - CATEGORY_CDE
+        - CUSTOMER_CDE
+        - PROCESS_DT 
+    CINS_TMP_CUSTOMER_{RPT_DT_TBL}:
+        - CUSTOMER_CDE
+Tags:
+    - CASA
+TW: NOW
 */
 INSERT INTO {TBL_NM}
 SELECT

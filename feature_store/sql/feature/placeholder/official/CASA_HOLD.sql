@@ -1,6 +1,17 @@
 /*
 Feature Name: CASA_HOLD
-Derived From: DW_ACCOUNT_MASTER_DIM
+Derived From: 
+    DW_ACCOUNT_MASTER_DIM:
+        - CUSTOMER_CDE
+        - ACTIVE
+        - COMPANY_KEY
+        - SUB_SECTOR_CDE
+        - CATEGORY_CDE
+        - OPEN_DT
+        - CLOSE_DT
+Tags:
+    - CASA
+TW: 1M
 */
 INSERT INTO {TBL_NM}
 SELECT

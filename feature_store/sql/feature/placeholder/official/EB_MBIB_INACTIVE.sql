@@ -12,7 +12,7 @@ Derived From:
     - SUB_SECTOR_CDE
 TW: 36M
 Tags: 
-  - LABEL
+  - LABEL, EBANKING
 */
 INSERT INTO {TBL_NM}
 WITH 

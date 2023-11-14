@@ -11,7 +11,8 @@ Derived From:
     - TXN_DT
     - TXN_STATUS
 Tags: 
-    - LABEL
+    - LABEL, EBANKING
+TW: 36M
 */
 INSERT INTO {TBL_NM}
 WITH

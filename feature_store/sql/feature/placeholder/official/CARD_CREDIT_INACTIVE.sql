@@ -19,7 +19,8 @@ Derived From:
         - PROCESS_DT
         - CUSTOMER_CDE
 Tags: 
-- LABEL
+    - LABEL
+    - CARD
 TW: 3M
 */
 INSERT INTO {TBL_NM}
