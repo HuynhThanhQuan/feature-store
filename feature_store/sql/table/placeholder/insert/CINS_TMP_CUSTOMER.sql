@@ -16,4 +16,4 @@ FROM (
     AND ACTIVE = '1' 
     AND COMPANY_KEY = '1'
     AND CUSTOMER_CDE IS NOT NULL
-)
+);
