@@ -6,8 +6,6 @@
 **/output/**
 .vscode
 **.tar
-sql/table/report_date/*
-sql/feature/report_date/*
 feature_store/sql/script/test/*
 
 !**/.gitkeep
