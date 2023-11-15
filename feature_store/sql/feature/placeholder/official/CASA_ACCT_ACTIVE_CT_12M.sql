@@ -18,6 +18,7 @@ Derived From:
     - CUSTOMER_CDE
 Tags: 
   - CASA
+  - BEHAVIORAL
 TW: 12M
 Desc: Đếm số lượng active account-id của TKTT khách hàng cá nhân trong 12 tháng gần nhất
 */

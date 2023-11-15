@@ -15,6 +15,7 @@ Tags:
   - CASA
   - RECENCY
 TW: 36M
+Desc: Đếm số ngày kể từ ngày giao dịch cuối cùng trong 36 tháng quan sát
 */ 
 INSERT INTO {TBL_NM}
 SELECT
