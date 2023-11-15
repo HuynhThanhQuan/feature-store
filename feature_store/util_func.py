@@ -99,8 +99,8 @@ def generate_test_scripts():
     # Config
     sel_date = '11-06-2023'
     sel_date_tbl = sel_date.replace('-','')
-    output_dev = f'./sql/script/FS_dev_{sel_date_tbl}.sql'
-    output_prod = f'./sql/script/FS_prod_{sel_date_tbl}.sql'
+    output_dev = f'./sql/script/test/FS_dev_{sel_date_tbl}.sql'
+    output_prod = f'./sql/script/test/FS_prod_{sel_date_tbl}.sql'
     create_tbl_fd = './sql/table/placeholder/create'
     insert_tbl_fd = './sql/table/placeholder/insert'
     feat_official_fd = './sql/feature/placeholder/official'
@@ -207,7 +207,7 @@ def get_backfill_info():
             except yaml.YAMLError as exc:
                 print(exc)
 
-    path = './sql/script/FS_prod_01102023.sql'
+    path = './sql/script/test/FS_prod_01102023.sql'
     with open(path,'r') as f:
         content = f.read()
 
@@ -235,13 +235,19 @@ def get_backfill_info():
         print(query)
 
 def extract_yaml_from_string(s):
-    pattern = r'/\*(.*?)\*/'
+    pattern = r'(/\*(.*?)\*/)'
     match = re.search(pattern, s, re.DOTALL)
     if match:
-        yaml_str = match.group(1)
-        return yaml.safe_load(yaml_str)
+        comment_sec = match.group(1).strip()
+        desc_sec = match.group(2).strip()
+        return yaml.safe_load(desc_sec), desc_sec, s.replace(comment_sec, '').strip()
     else:
-        return None
+        return None, None, None
+    
+
+def convert_yaml_to_string(yaml_data):
+    return yaml.dump(yaml_data, default_flow_style=False, sort_keys=False)
+
 
 def gen_derived_feature_script():
     base_fp = './sql/feature/placeholder/test_basefeat/base'
@@ -250,24 +256,43 @@ def gen_derived_feature_script():
     features = ['CASA_TXN_AMT']
     
     for feature in features:
-        derived_scripts = []
+        derived_sqls = []
         feat_fp = os.path.join(base_fp, feature + '.sql')
         with open(feat_fp, 'r') as f:
             base_script = f.read()
-        desc_yaml = extract_yaml_from_string(base_script)
+        desc_yaml, desc_sec, sql_sec = extract_yaml_from_string(base_script)
+        derived_desc_yaml = desc_yaml.copy()
+        del derived_desc_yaml['Derived By']
+
+        base_feat_name = desc_yaml.get('Feature Name')
         derived_format = desc_yaml.get('Derived By', {})
-        for agg in derived_format.get('Aggregations'):
-            for tw in derived_format.get('Time-Windows'):
+
+        aggs = derived_format.get('Aggregations')
+        tws = derived_format.get('Time-Windows')
+
+        for agg in aggs:
+            for tw in tws:
                 month_window = tw.replace('M', '')
-                derived_script = base_script.replace("{CAL}", agg)
-                derived_script = derived_script.replace("{TW}", month_window)
-                derived_scripts.append(derived_script)
-                print(derived_script)
+                feat_name = f'{base_feat_name}_{agg}_{tw}'
+                feat_fp = f'{feat_name}.sql'
+                
+                derived_desc_yaml['Feature Name'] = feat_name
+                derived_desc_yaml['Derived From'] = desc_yaml['Derived From']
+                derived_desc_yaml['TW'] = tw
+                derived_desc = convert_yaml_to_string(derived_desc_yaml)
+                derived_sql = sql_sec
+                derived_sql = derived_sql.replace("{{FEATURE_NAME}}", feat_name)
+                derived_sql = derived_sql.replace("{{AGG}}", agg)
+                derived_sql = derived_sql.replace("{{MONTH_WINDOW}}", month_window)
+                content = f"/*\n{derived_desc}*/\n{derived_sql}"
+                # derived_sqls.append(derived_sql)
+                with open(os.path.join(derived_fp, feat_fp), 'w') as f:
+                    f.write(content)
         
     
 if __name__ == '__main__':    
     # get_numrow_from_insert()
     # split_each_feature_into_a_file()
-    generate_test_scripts()
-    get_backfill_info()
-    # gen_derived_feature_script()
+    # generate_test_scripts()
+    # get_backfill_info()
+    gen_derived_feature_script()
