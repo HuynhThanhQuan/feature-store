@@ -13,6 +13,7 @@ Derived From:
     - CUSTOMER_CDE
 Tags: 
   - CASA
+  - RECENCY
 TW: 36M
 */ 
 INSERT INTO {TBL_NM}
