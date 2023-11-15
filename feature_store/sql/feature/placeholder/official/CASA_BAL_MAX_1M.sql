@@ -1,5 +1,5 @@
 /*
-Feature Name: CASA_AVG_BAL_1M
+Feature Name: CASA_BAL_MAX_1M
 Derived From: 
   DW_ANALYTICS.DW_DEPOSIT_FCT: 
     - CATEGORY_CDE
@@ -10,13 +10,15 @@ Derived From:
     - CUSTOMER_CDE 
 Tags: 
   - CASA
+  - MONETARY
 TW: 1M
+Desc: Số dư lớn nhất của các tài khoản thanh toán 1 tháng gần nhất
 */
 INSERT INTO {TBL_NM}
 SELECT
   DF.CUSTOMER_CDE,
-  'CASA_AVG_BAL_1M' AS FTR_NM,
-  AVG(DF.ACTUAL_BAL_LCL) AS FTR_VAL,
+  'CASA_BAL_MAX_1M' AS FTR_NM,
+  MAX(DF.ACTUAL_BAL_LCL) AS FTR_VAL,
   TO_DATE('{RPT_DT}', 'DD-MM-YY') AS RPT_DT,
   CURRENT_TIMESTAMP AS ADD_TSTP
 FROM DW_ANALYTICS.DW_DEPOSIT_FCT DF
