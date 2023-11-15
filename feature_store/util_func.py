@@ -80,6 +80,17 @@ def split_each_feature_into_a_file():
                     print(f'Feature {idx} is {feat_nm}')
 
 
+def read_sql_file(fp):
+    content = None
+    if not os.path.exists(fp):
+        with open(fp,'r') as f:
+            content = f.read().strip()
+            if content.endswith(';'):
+                id = content.rfind(';')
+                content = content[:id]
+    return content
+
+
 def generate_test_scripts():
     # Default
     tables, features = [], []
@@ -106,7 +117,6 @@ def generate_test_scripts():
     feat_official_fd = './sql/feature/placeholder/official'
     tbl_nm = 'CINS_FEATURE_STORE_V2'
 
-
     commit_ck = ';\n\n\nCOMMIT;\n\n\n'
     
     # Generate
@@ -119,37 +129,24 @@ def generate_test_scripts():
             drop_sql = f"DROP TABLE {t}"
         scripts.append(drop_sql)
 
-
     # Read CREATE & INSERT INTO table scripts first
     for t in tables:
         create_sql_fp = os.path.join(create_tbl_fd, t + '.sql')
-        if os.path.exists(create_sql_fp):
-            with open(create_sql_fp,'r') as f:
-                create_script = f.read().strip()
-                if create_script.endswith(';'):
-                    id = create_script.rfind(';')
-                    create_script = create_script[:id]
+        create_script = read_sql_file(create_sql_fp)
+        if create_script:
             scripts.append(create_script)
         
     for t in tables:
         insert_sql_fp = os.path.join(insert_tbl_fd, t + '.sql')
-        if os.path.exists(insert_sql_fp):
-            with open(insert_sql_fp,'r') as f:
-                insert_script = f.read().strip()
-                if insert_script.endswith(';'):
-                    id = insert_script.rfind(';')
-                    insert_script = insert_script[:id]
+        insert_script = read_sql_file(insert_sql_fp)
+        if insert_script:
             scripts.append(insert_script)
 
     # Read Feature
     for f in features:
         feat_sql_fp = os.path.join(feat_official_fd, f + '.sql')
-        if os.path.exists(feat_sql_fp):
-            with open(feat_sql_fp,'r') as f:
-                feat_script = f.read().strip()
-                if feat_script.endswith(';'):
-                    id = feat_script.rfind(';')
-                    feat_script = feat_script[:id]
+        feat_script = read_sql_file(feat_sql_fp)
+        if feat_script:
             scripts.append(feat_script)
     
     # Aggregated
@@ -158,7 +155,6 @@ def generate_test_scripts():
     final_script += commit_ck
 
     final_script = final_script.strip()
-    
 
     # Replace TBL_NM, RPT_DT and RPT_DT_TBL
     final_script = final_script.replace('{TBL_NM}', f'{tbl_nm}')
@@ -176,7 +172,6 @@ def generate_test_scripts():
     #Output_prod
     with open(output_prod, 'w') as f:
         f.writelines(final_script_prod)
-
     print('Done')
 
 
@@ -256,7 +251,6 @@ def gen_derived_feature_script():
     features = ['CASA_TXN_AMT']
     
     for feature in features:
-        derived_sqls = []
         feat_fp = os.path.join(base_fp, feature + '.sql')
         with open(feat_fp, 'r') as f:
             base_script = f.read()
@@ -285,7 +279,6 @@ def gen_derived_feature_script():
                 derived_sql = derived_sql.replace("{{AGG}}", agg)
                 derived_sql = derived_sql.replace("{{MONTH_WINDOW}}", month_window)
                 content = f"/*\n{derived_desc}*/\n{derived_sql}"
-                # derived_sqls.append(derived_sql)
                 with open(os.path.join(derived_fp, feat_fp), 'w') as f:
                     f.write(content)
         
@@ -293,6 +286,6 @@ def gen_derived_feature_script():
 if __name__ == '__main__':    
     # get_numrow_from_insert()
     # split_each_feature_into_a_file()
-    # generate_test_scripts()
-    # get_backfill_info()
+    generate_test_scripts()
+    get_backfill_info()
     gen_derived_feature_script()
