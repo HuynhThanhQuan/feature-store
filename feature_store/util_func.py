@@ -258,12 +258,11 @@ def gen_derived_feature_script():
         derived_format = desc_yaml.get('Derived By', {})
         for agg in derived_format.get('Aggregations'):
             for tw in derived_format.get('Time-Windows'):
+                month_window = tw.replace('M', '')
                 derived_script = base_script.replace("{CAL}", agg)
-                derived_script = derived_script.replace("{TW}", tw)
+                derived_script = derived_script.replace("{TW}", month_window)
                 derived_scripts.append(derived_script)
                 print(derived_script)
-        else:
-            print('No derived script')
         
     
 if __name__ == '__main__':    
