@@ -12,7 +12,6 @@ Tags:
     - CASA
     - MONETARY
 TW: NOW
-Desc: Tổng số dư tài khoản thanh toán tại thời điểm hiện tại
 */
 INSERT INTO {TBL_NM}
 SELECT

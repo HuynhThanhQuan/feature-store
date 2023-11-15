@@ -12,7 +12,6 @@ Tags:
   - CASA
   - MONETARY
 TW: 1M
-Desc: Số dư trung bình của các tài khoản thanh toán 1 tháng gần nhất
 */
 INSERT INTO {TBL_NM}
 SELECT

@@ -16,7 +16,6 @@ Tags:
   - CASA
   - MONETARY
 TW: 12M
-Desc: Tổng giá trị giao dịch bằng TKTT trong 12M tháng gần nhất, if null then 0
 */
 INSERT INTO {TBL_NM}
 SELECT

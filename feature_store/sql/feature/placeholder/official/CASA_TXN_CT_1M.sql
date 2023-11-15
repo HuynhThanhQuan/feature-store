@@ -16,7 +16,6 @@ Tags:
   - CASA
   - FREQUENCY
 TW: 1M
-Desc: Đếm số giao dịch bằng TKTT trong 1 tháng gần nhất
 */
 INSERT INTO {TBL_NM}
 SELECT
