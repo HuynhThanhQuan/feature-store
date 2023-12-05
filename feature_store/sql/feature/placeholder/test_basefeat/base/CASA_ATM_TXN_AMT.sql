@@ -1,5 +1,5 @@
 /*
-Feature Name: CASA_TXN_AMT
+Feature Name: CASA_ATM_TXN_AMT
 Derived From: 
   DW_ANALYTICS.DWA_STMT_EBANK: 
     - AMT_LCY
@@ -14,6 +14,7 @@ Derived From:
     - CUSTOMER_CDE
 Tags: 
   - CASA
+  - MONETARY
 Derived By:
   Aggregations: 
     - SUM
