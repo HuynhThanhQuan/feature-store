@@ -16,6 +16,7 @@ Derived By:
     - SUM
     - AVG
     - MIN
+    - MAX
   Time-Windows: 
     - 1M
     - 3M
