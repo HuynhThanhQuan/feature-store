@@ -82,7 +82,7 @@ def split_each_feature_into_a_file():
 
 def read_sql_file(fp):
     content = None
-    if not os.path.exists(fp):
+    if os.path.exists(fp):
         with open(fp,'r') as f:
             content = f.read().strip()
             if content.endswith(';'):
@@ -97,7 +97,19 @@ def generate_test_scripts():
 
     # Test
     # tables = ['CINS_2M_PART', 'CINS_TMP_LST']
-    features = ['CASA_ACCT_ACTIVE_CT_12M', 'CASA_DAY_SINCE_LAST_TXN_CT_36M', 'CASA_TXN_CT_1M', 'CASA_TXN_CT_3M','CASA_TXN_CT_6M', 'CASA_TXN_CT_12M', 'CASA_BAL_SUM_NOW', 'CASA_BAL_AVG_1M', 'CASA_BAL_MAX_1M', 'CASA_BAL_MIN_1M', 'CASA_TXN_AMT_SUM_1M', 'CASA_TXN_AMT_SUM_3M', 'CASA_TXN_AMT_SUM_6M', 'CASA_TXN_AMT_SUM_12M']
+    features = [
+        'CASA_ACCT_ACTIVE_CT_12M','CASA_ACCT_CT_36M',
+        'CASA_BAL_AVG_12M','CASA_BAL_AVG_1M','CASA_BAL_AVG_3M','CASA_BAL_AVG_6M',
+        'CASA_BAL_MAX_12M','CASA_BAL_MAX_1M','CASA_BAL_MAX_3M','CASA_BAL_MAX_6M',
+        'CASA_BAL_MIN_12M','CASA_BAL_MIN_1M','CASA_BAL_MIN_3M','CASA_BAL_MIN_6M',
+        'CASA_BAL_SUM_12M','CASA_BAL_SUM_1M','CASA_BAL_SUM_3M','CASA_BAL_SUM_6M',
+        'CASA_BAL_SUM_NOW','CASA_DAY_SINCE_LAST_TXN_CT_36M',
+        'CASA_TXN_AMT_AVG_12M','CASA_TXN_AMT_AVG_1M','CASA_TXN_AMT_AVG_3M','CASA_TXN_AMT_AVG_6M',
+        'CASA_TXN_AMT_MAX_12M','CASA_TXN_AMT_MAX_1M','CASA_TXN_AMT_MAX_3M','CASA_TXN_AMT_MAX_6M',
+        'CASA_TXN_AMT_MIN_12M','CASA_TXN_AMT_MIN_1M','CASA_TXN_AMT_MIN_3M','CASA_TXN_AMT_MIN_6M',
+        'CASA_TXN_AMT_SUM_12M','CASA_TXN_AMT_SUM_1M','CASA_TXN_AMT_SUM_3M','CASA_TXN_AMT_SUM_6M',
+        'CASA_TXN_CT_12M','CASA_TXN_CT_1M','CASA_TXN_CT_3M','CASA_TXN_CT_6M',
+    ]
     
     # Full
     # tables = [
@@ -143,11 +155,16 @@ def generate_test_scripts():
             scripts.append(insert_script)
 
     # Read Feature
+    print(f'Num features {len(features)}')
     for f in features:
+        print(f, end=' ')
         feat_sql_fp = os.path.join(feat_official_fd, f + '.sql')
         feat_script = read_sql_file(feat_sql_fp)
         if feat_script:
+            print('added')
             scripts.append(feat_script)
+        else:
+            print('missed')
     
     # Aggregated
     final_script = commit_ck.join(scripts)
@@ -286,6 +303,6 @@ def gen_derived_feature_script():
 if __name__ == '__main__':    
     # get_numrow_from_insert()
     # split_each_feature_into_a_file()
-    # generate_test_scripts()
+    generate_test_scripts()
     # get_backfill_info()
-    gen_derived_feature_script()
+    # gen_derived_feature_script()
