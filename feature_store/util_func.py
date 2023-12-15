@@ -266,7 +266,7 @@ def gen_derived_feature_script():
     base_fp = './sql/feature/placeholder/test_basefeat/base'
     derived_fp = './sql/feature/placeholder/test_basefeat/derived'
 
-    features = ['CASA_TXN_AMT', 'CASA_BAL']
+    features = ['CARD_CREDIT_TXN', 'CARD_CREDIT_TXN_DOM', 'CARD_CREDIT_TXN_INTER', 'CARD_CREDIT_TXN_OFFLINE', 'CARD_CREDIT_TXN_ONLINE']
     
     for feature in features:
         feat_fp = os.path.join(base_fp, feature + '.sql')
@@ -304,6 +304,6 @@ def gen_derived_feature_script():
 if __name__ == '__main__':    
     # get_numrow_from_insert()
     # split_each_feature_into_a_file()
-    generate_test_scripts()
+    # generate_test_scripts()
     # get_backfill_info()
-    # gen_derived_feature_script()
+    gen_derived_feature_script()
