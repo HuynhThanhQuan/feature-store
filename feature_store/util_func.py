@@ -9,6 +9,10 @@ import os
 logger = logging.getLogger(__name__)
 
 
+
+COMMIT_CHECKPOINT = ';\n\n\nCOMMIT;\n\n\n'
+
+
 def timeit(func):
     @wraps(func)
     def wrapper(*args, **kwargs):

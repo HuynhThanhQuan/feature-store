@@ -13,6 +13,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+
+COMMIT_CHECKPOINT = util_func.COMMIT_CHECKPOINT
+
 def split_each_feature_into_a_file():
     feature_fp = './feature/placeholder/'
     unstructured_fp = os.path.join(feature_fp, 'unstructured')
@@ -44,7 +47,6 @@ def gen_run_oneoff_script():
     table_template = './template/table'
     feat_template = './template/feature'
     tbl_nm = 'CINS_FEATURE_STORE_V2'
-    commit_ck = ';\n\n\nCOMMIT;\n\n\n'
 
 
     # Default
@@ -97,9 +99,9 @@ def gen_run_oneoff_script():
             print('missed')
     
     # Aggregated
-    final_script = commit_ck.join(scripts)
+    final_script = COMMIT_CHECKPOINT.join(scripts)
 
-    final_script += commit_ck
+    final_script += COMMIT_CHECKPOINT
 
     final_script = final_script.strip()
 
