@@ -1,3 +1,7 @@
+import sys
+sys.path.append('..')
+
+
 import os
 import gen_feature
 import re
@@ -10,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 def split_each_feature_into_a_file():
-    feature_fp = './sql/feature/placeholder/'
+    feature_fp = './feature/placeholder/'
     unstructured_fp = os.path.join(feature_fp, 'unstructured')
     structured_fp = os.path.join(feature_fp, 'structured')
     
@@ -46,10 +50,10 @@ def gen_run_oneoff_script():
     # Config
     sel_date = '11-06-2023'
     sel_date_tbl = sel_date.replace('-','')
-    output_dev = f'./sql/script/FS_dev_{sel_date_tbl}.sql'
-    output_prod = f'./sql/script/FS_prod_{sel_date_tbl}.sql'
-    table_template = './sql/template/table'
-    feat_template = './sql/template/feature'
+    output_dev = f'./script/FS_dev_{sel_date_tbl}.sql'
+    output_prod = f'./script/FS_prod_{sel_date_tbl}.sql'
+    table_template = './template/table'
+    feat_template = './template/feature'
     tbl_nm = 'CINS_FEATURE_STORE_V2'
     commit_ck = ';\n\n\nCOMMIT;\n\n\n'
 
@@ -161,7 +165,7 @@ def get_backfill_info():
             except yaml.YAMLError as exc:
                 print(exc)
 
-    path = './sql/script/FS_prod_01102023.sql'
+    path = './script/FS_prod_01102023.sql'
     with open(path,'r') as f:
         content = f.read()
 
@@ -205,8 +209,8 @@ def convert_yaml_to_string(yaml_data):
 
 
 def gen_derived_feature_scripts_from_base_feature():
-    base_fp = './sql/template/feature/base_feature/base'
-    derived_fp = './sql/template/feature/base_feature/derived'
+    base_fp = './template/feature/base_feature/base'
+    derived_fp = './template/feature/base_feature/derived'
 
     features = []
     # features = ['CARD_CREDIT_TXN', 'CARD_CREDIT_TXN_DOM', 'CARD_CREDIT_TXN_INTER', 'CARD_CREDIT_TXN_OFFLINE', 'CARD_CREDIT_TXN_ONLINE']
@@ -247,6 +251,6 @@ def gen_derived_feature_scripts_from_base_feature():
     
 if __name__ == '__main__':    
     # split_each_feature_into_a_file()
-    # gen_run_oneoff_script()
+    gen_run_oneoff_script()
     # get_backfill_info()
-    gen_derived_feature_scripts_from_base_feature()
+    # gen_derived_feature_scripts_from_base_feature()
