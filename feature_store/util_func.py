@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 
-COMMIT_CHECKPOINT = ';\n\n\nCOMMIT;\n\n\n'
+COMMIT_CHECKPOINT = '\n\n\nCOMMIT;\n\n\n'
 
 
 def timeit(func):
@@ -55,3 +55,15 @@ def read_sql_file(fp):
                 id = content.rfind(';')
                 content = content[:id]
     return content
+
+
+def format_sql(text):
+    text = text.strip()
+    if text.endswith(';'):
+        return text
+    return text + ';'
+
+
+def post_processing_sql(query):
+    query = query.replace(';;',';')
+    return query
