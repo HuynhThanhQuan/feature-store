@@ -6,5 +6,3 @@
 **/output/**
 .vscode
 **.tar
-
-!**/.gitkeep
