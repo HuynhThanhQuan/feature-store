@@ -7,7 +7,7 @@ import gen_feature
 import re
 import yaml
 import re
-
+import util_func
 import logging
 
 logger = logging.getLogger(__name__)
@@ -33,17 +33,6 @@ def split_each_feature_into_a_file():
                         with open(os.path.join(feature_fp, f'{feat_nm}.sql'), 'w') as f:
                             f.write(feature.strip())
                     print(f'Feature {idx} is {feat_nm}')
-
-
-def read_sql_file(fp):
-    content = None
-    if os.path.exists(fp):
-        with open(fp,'r') as f:
-            content = f.read().strip()
-            if content.endswith(';'):
-                id = content.rfind(';')
-                content = content[:id]
-    return content
 
 
 def gen_run_oneoff_script():
@@ -91,7 +80,7 @@ def gen_run_oneoff_script():
     # Read CREATE & INSERT INTO table scripts first
     for t in tables:
         create_sql_fp = os.path.join(table_template, t + '.sql')
-        create_script = read_sql_file(create_sql_fp)
+        create_script = util_func.read_sql_file(create_sql_fp)
         if create_script:
             scripts.append(create_script)
         
@@ -100,7 +89,7 @@ def gen_run_oneoff_script():
     for f in features:
         print(f, end=' ')
         feat_sql_fp = os.path.join(feat_template, f + '.sql')
-        feat_script = read_sql_file(feat_sql_fp)
+        feat_script = util_func.read_sql_file(feat_sql_fp)
         if feat_script:
             print('added')
             scripts.append(feat_script)
@@ -193,21 +182,6 @@ def get_backfill_info():
         print(query)
 
 
-def extract_yaml_from_string(s):
-    pattern = r'(/\*(.*?)\*/)'
-    match = re.search(pattern, s, re.DOTALL)
-    if match:
-        comment_sec = match.group(1).strip()
-        desc_sec = match.group(2).strip()
-        return yaml.safe_load(desc_sec), desc_sec, s.replace(comment_sec, '').strip()
-    else:
-        return None, None, None
-    
-
-def convert_yaml_to_string(yaml_data):
-    return yaml.dump(yaml_data, default_flow_style=False, sort_keys=False)
-
-
 def gen_derived_feature_scripts_from_base_feature():
     base_fp = './template/feature/base_feature/base'
     derived_fp = './template/feature/base_feature/derived'
@@ -220,7 +194,7 @@ def gen_derived_feature_scripts_from_base_feature():
         feat_fp = os.path.join(base_fp, feature + '.sql')
         with open(feat_fp, 'r') as f:
             base_script = f.read()
-        desc_yaml, desc_sec, sql_sec = extract_yaml_from_string(base_script)
+        desc_yaml, _, sql_sec = util_func.extract_desc_yaml_section_from_string(base_script)
         derived_desc_yaml = desc_yaml.copy()
         del derived_desc_yaml['Derived By']
 
@@ -239,7 +213,7 @@ def gen_derived_feature_scripts_from_base_feature():
                 derived_desc_yaml['Feature Name'] = feat_name
                 derived_desc_yaml['Derived From'] = desc_yaml['Derived From']
                 derived_desc_yaml['TW'] = tw
-                derived_desc = convert_yaml_to_string(derived_desc_yaml)
+                derived_desc = util_func.convert_yaml_to_string(derived_desc_yaml)
                 derived_sql = sql_sec
                 derived_sql = derived_sql.replace("{{FEATURE_NAME}}", feat_name)
                 derived_sql = derived_sql.replace("{{AGG}}", agg)

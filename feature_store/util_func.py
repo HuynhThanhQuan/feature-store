@@ -1,8 +1,13 @@
 import time
 from functools import wraps
 import logging
+import yaml
+import re
+import os
+
 
 logger = logging.getLogger(__name__)
+
 
 def timeit(func):
     @wraps(func)
@@ -21,3 +26,28 @@ def my_func(n=100):
     for _ in range(n):
         pass
     
+
+def extract_desc_yaml_section_from_string(s):
+    pattern = r'(/\*(.*?)\*/)'
+    match = re.search(pattern, s, re.DOTALL)
+    if match:
+        comment_sec = match.group(1).strip()
+        desc_sec = match.group(2).strip()
+        return yaml.safe_load(desc_sec), desc_sec, s.replace(comment_sec, '').strip()
+    else:
+        return None, None, None
+    
+
+def convert_yaml_to_string(yaml_data):
+    return yaml.dump(yaml_data, default_flow_style=False, sort_keys=False)
+
+
+def read_sql_file(fp):
+    content = None
+    if os.path.exists(fp):
+        with open(fp,'r') as f:
+            content = f.read().strip()
+            if content.endswith(';'):
+                id = content.rfind(';')
+                content = content[:id]
+    return content

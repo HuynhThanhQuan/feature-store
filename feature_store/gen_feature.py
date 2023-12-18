@@ -2,7 +2,6 @@ import os
 from oraDB import oraDB
 import cx_Oracle
 import re
-import multiprocessing
 import util
 # Set up logging
 import logging
@@ -25,43 +24,6 @@ def read_ft_and_tbl_in_subquery(query):
             derived_tables = [i.strip() for i in derived_tables]
     return description, features, derived_tables
             
-# def run_feature_record_query(f_record):
-#     conn,cur= oraDB.connect()
-#     #ALTER SESSION
-#     # cur.execute("ALTER SESSION FORCE PARALLEL DML PARALLEL 64")
-#     # cur.execute("ALTER SESSION FORCE PARALLEL QUERY PARALLEL 64")
-    
-#     query = f_record['query'] 
-#     desc = f_record['desc']
-#     features = f_record['features']
-#     d_tables = f_record['derived_tables']
-#     ftype = f_record['ftype']
-#     f_record['query_status'] = 'uninitiated'
-#     try:
-#         if features and d_tables:
-#             logger.info(f'INSERTING feature {features}')
-#             logger.debug(f'Start INSERT feature {features} FROM {d_tables} - ftype: {ftype}')
-#         else:
-#             logger.debug(f'[WARN] Start INSERT script {desc}')
-#         cur.execute(query)
-#         cur.execute('COMMIT')
-#         if features and d_tables:
-#             logger.debug(f'Succeed INSERT feature {features} FROM {d_tables} - ftype: {ftype}')
-#         else:
-#             logger.debug(f'[WARN] Succeed INSERT script {desc}')
-#         f_record['query_status'] = 'passed'
-#     except cx_Oracle.DatabaseError as e:
-#         logger.error(e)
-#         logger.error(f'Failed to execute query record {f_record}')
-#         f_record['query_status'] = 'failed'
-#     except Exception as er:
-#         logger.error(er)
-#         logger.error(f'Failed to execute query record {f_record}')
-#         f_record['query_status'] = 'failed'
-#     finally:
-#         cur.close()
-#         conn.close()
-#     return f_record
 
 def run_feature_record_query_with_cur(f_record, cur):
     query = f_record['query'] 
@@ -118,18 +80,6 @@ def read_sql_feature_file(filepath, ftype):
                 }
                 records.append(record)
     return records
-
-# def run_multiquery(feature_sqls):
-#     feature_sql_jobs = None
-#     # Execute multi-query process
-#     s0 = datetime.datetime.now()
-#     logger.info('Start multi-quering features')
-#     with multiprocessing.Pool(processes=NUM_PROCESSES) as pool:
-#         feature_sql_jobs = pool.map(run_feature_record_query, feature_sqls)
-#     logger.info('End multi-quering features')
-#     el = datetime.datetime.now() - s0
-#     logger.info(f'[timeit] Elapsed time of multi-query feature {el}')
-#     return feature_sql_jobs
 
 
 @util.timeit
