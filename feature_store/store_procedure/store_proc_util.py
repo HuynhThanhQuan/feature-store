@@ -44,8 +44,9 @@ def fill_in_template(config_data, template_content):
             sql_sec = sql_sec.replace('{TBL_NM}', tbl_nm)
             sql_sec = sql_sec.replace('CINS_TMP_CUSTOMER_{RPT_DT_TBL}',src_tbl)
             sql_sec = sql_sec.replace("'{RPT_DT}'", 'RPT_DT')
-            agg_content.append(sql_sec)
+            agg_content.append(util_func.format_sql(sql_sec))
     agg_content = util_func.COMMIT_CHECKPOINT.join(agg_content).strip()
+    agg_content = util_func.post_processing_sql(agg_content)
 
     # Read proc template
     # Replace ${FEATURE_SCRIPTS}$ -> agg_content
