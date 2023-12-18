@@ -42,15 +42,14 @@ def read_sql_file(fp):
     return content
 
 
-def generate_test_scripts():
+def gen_run_oneoff_script():
     # Config
     sel_date = '11-06-2023'
     sel_date_tbl = sel_date.replace('-','')
-    output_dev = f'./sql/script/test/FS_dev_{sel_date_tbl}.sql'
-    output_prod = f'./sql/script/test/FS_prod_{sel_date_tbl}.sql'
-    create_tbl_fd = './sql/table/placeholder/create'
-    insert_tbl_fd = './sql/table/placeholder/insert'
-    feat_official_fd = './sql/feature/placeholder/official'
+    output_dev = f'./sql/script/FS_dev_{sel_date_tbl}.sql'
+    output_prod = f'./sql/script/FS_prod_{sel_date_tbl}.sql'
+    table_template = './sql/template/table'
+    feat_template = './sql/template/feature'
     tbl_nm = 'CINS_FEATURE_STORE_V2'
     commit_ck = ';\n\n\nCOMMIT;\n\n\n'
 
@@ -75,16 +74,6 @@ def generate_test_scripts():
         'CASA_ACCT_COMBO_CT_36M', 'CASA_ACCT_PAYROLL_CT_36M'
     ]
     
-    # Full
-    # tables = [
-    # 'CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CREDIT_CARD_LOAN_6M', 'CINS_TMP_CREDIT_CARD_TRANSACTION', 'CINS_TMP_DATA_RPT_CARD', 'CINS_TMP_DATA_RPT_LOAN', 'CINS_TMP_EB_MB_CROSSELL', 'CINS_2M_PART', 'CINS_TMP_LST', 'CINS_FEATURE_STORE_V2'
-    # ]
-    # features = [
-    # 'REACTIVATED', 'INACTIVE', 'CASA_INACTIVE', 'EB_MBIB_INACTIVE', 'CARD_CREDIT_INACTIVE','EB_SACOMPAY_INACTIVE', 'AGE', 'GEN_GRP', 'PROFESSION', 'LIFE_STG','CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M'
-    # ]
-
-
-    
     # Generate
     scripts = []
     # Drop tables first
@@ -97,22 +86,16 @@ def generate_test_scripts():
 
     # Read CREATE & INSERT INTO table scripts first
     for t in tables:
-        create_sql_fp = os.path.join(create_tbl_fd, t + '.sql')
+        create_sql_fp = os.path.join(table_template, t + '.sql')
         create_script = read_sql_file(create_sql_fp)
         if create_script:
             scripts.append(create_script)
         
-    for t in tables:
-        insert_sql_fp = os.path.join(insert_tbl_fd, t + '.sql')
-        insert_script = read_sql_file(insert_sql_fp)
-        if insert_script:
-            scripts.append(insert_script)
-
     # Read Feature
     print(f'Num features {len(features)}')
     for f in features:
         print(f, end=' ')
-        feat_sql_fp = os.path.join(feat_official_fd, f + '.sql')
+        feat_sql_fp = os.path.join(feat_template, f + '.sql')
         feat_script = read_sql_file(feat_sql_fp)
         if feat_script:
             print('added')
@@ -132,7 +115,7 @@ def generate_test_scripts():
     final_script = final_script.replace('{RPT_DT}', f'{sel_date}')
     final_script = final_script.replace('{RPT_DT_TBL}', f'{sel_date_tbl}')
 
-    # Post-processing
+    # Post-processing: ensure ";" in placed
     if not final_script.strip().endswith(';'):
         final_script += ';'
     final_script_prod = final_script.replace('DW_ANALYTICS', 'DWPROD')
@@ -146,7 +129,9 @@ def generate_test_scripts():
     print('Done')
 
 
+@DeprecationWarning
 def generate_backfill_report(data):
+    """Generate data for backfill report include: tables, columns and script"""
     grouped = {}
     for item in data:
         derived_from = item.get('Derived From', {})
@@ -161,7 +146,10 @@ def generate_backfill_report(data):
         grouped[table] = list(set(columns))
     return grouped
 
+
+
 def get_backfill_info():
+    """Get data for backfill report include: tables, columns and script"""
     def extract_key_values(query):
         # print(query)
         description = re.findall(r'/\*(.*?)\*/',query, re.DOTALL)
@@ -173,7 +161,7 @@ def get_backfill_info():
             except yaml.YAMLError as exc:
                 print(exc)
 
-    path = './sql/script/test/FS_prod_01102023.sql'
+    path = './sql/script/FS_prod_01102023.sql'
     with open(path,'r') as f:
         content = f.read()
 
@@ -200,6 +188,7 @@ def get_backfill_info():
         query = f"SELECT {column_str} FROM {table}"
         print(query)
 
+
 def extract_yaml_from_string(s):
     pattern = r'(/\*(.*?)\*/)'
     match = re.search(pattern, s, re.DOTALL)
@@ -215,12 +204,14 @@ def convert_yaml_to_string(yaml_data):
     return yaml.dump(yaml_data, default_flow_style=False, sort_keys=False)
 
 
-def gen_derived_feature_script():
-    base_fp = './sql/feature/placeholder/test_basefeat/base'
-    derived_fp = './sql/feature/placeholder/test_basefeat/derived'
+def gen_derived_feature_scripts_from_base_feature():
+    base_fp = './sql/template/feature/base_feature/base'
+    derived_fp = './sql/template/feature/base_feature/derived'
 
-    features = ['CARD_CREDIT_TXN', 'CARD_CREDIT_TXN_DOM', 'CARD_CREDIT_TXN_INTER', 'CARD_CREDIT_TXN_OFFLINE', 'CARD_CREDIT_TXN_ONLINE']
-    
+    features = []
+    # features = ['CARD_CREDIT_TXN', 'CARD_CREDIT_TXN_DOM', 'CARD_CREDIT_TXN_INTER', 'CARD_CREDIT_TXN_OFFLINE', 'CARD_CREDIT_TXN_ONLINE']
+
+
     for feature in features:
         feat_fp = os.path.join(base_fp, feature + '.sql')
         with open(feat_fp, 'r') as f:
@@ -256,6 +247,6 @@ def gen_derived_feature_script():
     
 if __name__ == '__main__':    
     # split_each_feature_into_a_file()
-    # generate_test_scripts()
+    # gen_run_oneoff_script()
     # get_backfill_info()
-    gen_derived_feature_script()
+    gen_derived_feature_scripts_from_base_feature()
