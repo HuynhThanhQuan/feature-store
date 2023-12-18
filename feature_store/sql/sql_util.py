@@ -43,6 +43,18 @@ def read_sql_file(fp):
 
 
 def generate_test_scripts():
+    # Config
+    sel_date = '11-06-2023'
+    sel_date_tbl = sel_date.replace('-','')
+    output_dev = f'./sql/script/test/FS_dev_{sel_date_tbl}.sql'
+    output_prod = f'./sql/script/test/FS_prod_{sel_date_tbl}.sql'
+    create_tbl_fd = './sql/table/placeholder/create'
+    insert_tbl_fd = './sql/table/placeholder/insert'
+    feat_official_fd = './sql/feature/placeholder/official'
+    tbl_nm = 'CINS_FEATURE_STORE_V2'
+    commit_ck = ';\n\n\nCOMMIT;\n\n\n'
+
+
     # Default
     tables, features = [], []
 
@@ -71,17 +83,7 @@ def generate_test_scripts():
     # 'REACTIVATED', 'INACTIVE', 'CASA_INACTIVE', 'EB_MBIB_INACTIVE', 'CARD_CREDIT_INACTIVE','EB_SACOMPAY_INACTIVE', 'AGE', 'GEN_GRP', 'PROFESSION', 'LIFE_STG','CASA_AVG_BAL_1M', 'CASA_CT_ACCT_ACTIVE', 'CASA_CT_TXN_1M', 'CASA_DAY_SINCE_LTST_TXN','CASA_MAX_BAL_1M', 'CASA_MIN_BAL_1M', 'CASA_SUM_TXN_AMT_1M'
     # ]
 
-    # Config
-    sel_date = '11-06-2023'
-    sel_date_tbl = sel_date.replace('-','')
-    output_dev = f'./sql/script/test/FS_dev_{sel_date_tbl}.sql'
-    output_prod = f'./sql/script/test/FS_prod_{sel_date_tbl}.sql'
-    create_tbl_fd = './sql/table/placeholder/create'
-    insert_tbl_fd = './sql/table/placeholder/insert'
-    feat_official_fd = './sql/feature/placeholder/official'
-    tbl_nm = 'CINS_FEATURE_STORE_V2'
 
-    commit_ck = ';\n\n\nCOMMIT;\n\n\n'
     
     # Generate
     scripts = []
@@ -253,7 +255,6 @@ def gen_derived_feature_script():
         
     
 if __name__ == '__main__':    
-    # get_numrow_from_insert()
     # split_each_feature_into_a_file()
     # generate_test_scripts()
     # get_backfill_info()
