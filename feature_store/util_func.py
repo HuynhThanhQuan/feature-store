@@ -9,7 +9,6 @@ import os
 logger = logging.getLogger(__name__)
 
 
-
 COMMIT_CHECKPOINT = '\n\n\nCOMMIT;\n\n\n'
 
 
@@ -25,11 +24,7 @@ def timeit(func):
     return wrapper
 
 
-@timeit
-def my_func(n=100):
-    for _ in range(n):
-        pass
-    
+
 
 def extract_desc_yaml_section_from_string(s):
     pattern = r'(/\*(.*?)\*/)'

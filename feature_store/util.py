@@ -14,3 +14,10 @@ def timeit(func):
         logger.debug(f'[timeit] Function "{func.__name__}" took "{elapsed_time}" seconds')
         return result
     return wrapper
+
+
+@timeit
+def my_func(n=100):
+    for _ in range(n):
+        pass
+    

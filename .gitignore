@@ -6,3 +6,4 @@
 **/output/**
 .vscode
 **.tar
+feature_store/sql/script
