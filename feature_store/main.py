@@ -1,7 +1,7 @@
 # /opt/bitnami/miniconda/bin/python main.py
 
 import yaml
-import gen_script, check_DB, gen_table, gen_feature, util, ft_dependency
+import gen_sql_script, check_DB, gen_table, gen_feature, util, ft_dependency
 import argparse
 import sys
 import logging
@@ -74,8 +74,8 @@ def generate_features_report_date(response):
     3. Generate and INSERT INTO feature data
     """
     # Gen script of RPT_DT
-    response.update(gen_script.gen_tmp_table_script(response))
-    response.update(gen_script.gen_feature_script(response))
+    response.update(gen_sql_script.gen_tmp_table_script(response))
+    response.update(gen_sql_script.gen_feature_script(response))
     # Create & Insert data into TMP table
     response.update(check_DB.check_exists(response))
     response.update(check_DB.drop_tables(response))
@@ -88,42 +88,42 @@ def generate_features_report_date(response):
 
 @util.timeit
 def drop_tables_report_date(response):
-    response.update(gen_script.gen_tmp_table_script(response))
+    response.update(gen_sql_script.gen_tmp_table_script(response))
     response.update(check_DB.check_exists(response))
     response.update(check_DB.drop_tables(response))
 
 @util.timeit
 def check_existing_tmp_tables(response):
-    response.update(gen_script.gen_tmp_table_script(response))
+    response.update(gen_sql_script.gen_tmp_table_script(response))
     response.update(check_DB.check_exists(response))
 
 @util.timeit
 def generate_scripts(response):
-    response.update(gen_script.gen_tmp_table_script(response))
-    response.update(gen_script.gen_feature_script(response))
+    response.update(gen_sql_script.gen_tmp_table_script(response))
+    response.update(gen_sql_script.gen_feature_script(response))
 
 @util.timeit
 def create_empty_tmp_tables(response):
-    response.update(gen_script.gen_tmp_table_script(response))
+    response.update(gen_sql_script.gen_tmp_table_script(response))
     response.update(check_DB.check_exists(response))
     response.update(gen_table.create_empty_tmp_tables(response))
 
 @util.timeit
 def insert_into_tmp_tables(response):
-    response.update(gen_script.gen_tmp_table_script(response))
+    response.update(gen_sql_script.gen_tmp_table_script(response))
     response.update(check_DB.check_exists(response))
     response.update(gen_table.insert_into_tmp_tables(response))
 
 @util.timeit
 def gen_feature_only(response):
-    response.update(gen_script.gen_feature_script(response))
+    response.update(gen_sql_script.gen_feature_script(response))
     response.update(gen_feature.run_feature_query(response))
 
 @util.timeit
 def gen_sql_script(response):
-    response.update(gen_script.gen_tmp_table_script(response))
-    response.update(gen_script.gen_feature_script(response))
-    response.update(gen_script.aggregate_sql_scripts(response))
+    response.update(gen_sql_script.gen_tmp_table_script(response))
+    response.update(gen_sql_script.gen_feature_script(response))
+    response.update(gen_sql_script.aggregate_sql_scripts(response))
     
 @util.timeit    
 def test_new_func():
