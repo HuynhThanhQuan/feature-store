@@ -8,6 +8,7 @@ Derived From:
     - APPROVAL_CDE
     - RETRVL_REFNO
     - PROCESS_DT
+    - AMT_BILL
   DW_ANALYTICS.DW_CARD_MERCHANT_DIM:
     - MERCHANT_ID
 */
