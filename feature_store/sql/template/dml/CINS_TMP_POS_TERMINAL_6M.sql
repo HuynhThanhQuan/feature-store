@@ -14,82 +14,80 @@ Derived From:
     - TERMINAL_TYPE
 */
 INSERT INTO CINS_TMP_POS_TERMINAL_6M_{RPT_DT_TBL} 
-SELECT 
-        E.customer_cde,
-        F.MERCHANT_CDE, 
-        F.TERMINAL_ID,
-        TO_CHAR(TO_DATE('{RPT_DT}','DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, 
-        AMT_BILL,
-        CURRENT_TIMESTAMP ADD_TSTP  
-FROM
-(
-        SELECT 
-                customer_cde, 
-                MERCHANT_CDE, 
-                TERMINAL_ID,  
-                AMT_BILL 
-        FROM
-        (
-                SELECT 
-                        customer_cde, 
-                        merchant_cde, 
-                        TERMINAL_ID,
-                        SUM(AMT_BILL) AMT_BILL, 
-                        row_number()over(partition by customer_cde order by SUM(AMT_BILL) desc) rn1
-                FROM
-                (
-                        SELECT 
-                                customer_cde, 
-                                merchant_cde,
-                                cardhdr_no, 
-                                TERMINAL_ID,
-                                approval_cde, 
-                                retrvl_refno,
-                                process_dt, 
-                                AMT_BILL,
-                                row_number()over(partition by customer_cde,cardhdr_no, approval_cde, retrvl_refno order by process_dt desc) rn
-                        FROM 
-                        (
-                                SELECT 
-                                        customer_cde, 
-                                        trim(' ' from(merchant_cde)) merchant_cde, 
-                                        cardhdr_no, 
-                                        TERMINAL_ID,
-                                        trim(' ' from (approval_cde)) approval_cde, 
-                                        retrvl_refno,
-                                        ABS(AMT_BILL) AMT_BILL,
-                                        process_dt
-                                FROM 
-                                        DW_ANALYTICS.dw_card_transaction_fct T1
-                                WHERE 
-                                        process_dt < TO_DATE('{RPT_DT}','DD-MM-YY') 
-                                        AND process_dt >= ADD_MONTHS(TO_DATE('{RPT_DT}','DD-MM-YY'), -6)
-                                        AND tran_status = 'S' 
-                                        AND EXISTS (
-                                                SELECT 1 
-                                                FROM CINS_TMP_CUSTOMER_{RPT_DT_TBL} t2 
-                                                WHERE t1.CUSTOMER_CDE=t2.CUSTOMER_CDE
-                                        ) 
-                        )    
-                )
-                WHERE rn = 1
-                GROUP BY customer_cde, merchant_cde, terminal_id
-        )
-        WHERE rn1 = 1
-) E
-LEFT JOIN
-(
-        SELECT 
-                MERCHANT_CDE, 
-                TERMINAL_ID, 
-                TERMINAL_TYPE 
-        FROM 
-                DW_ANALYTICS.DW_CARD_TERMINAL_DIM 
-        WHERE 
-                TERMINAL_TYPE = 'POS'
-) F
-ON 
-        E.MERCHANT_CDE = F.MERCHANT_CDE 
-        AND E.TERMINAL_ID = F.TERMINAL_ID
-WHERE 
-        F.MERCHANT_CDE IS NOT NULL;
+WITH 
+T1 AS (
+  SELECT 
+    CUSTOMER_CDE, 
+    TRIM(' ' FROM(MERCHANT_CDE)) MERCHANT_CDE, 
+    CARDHDR_NO, 
+    TERMINAL_ID,
+    TRIM(' ' FROM (APPROVAL_CDE)) APPROVAL_CDE, 
+    RETRVL_REFNO,
+    ABS(AMT_BILL) AMT_BILL,
+    PROCESS_DT
+  FROM DW_ANALYTICS.DW_CARD_TRANSACTION_FCT Ta1
+  RIGHT JOIN CINS_TMP_CUSTOMER_{RPT_DT_TBL} Ta2 ON Ta1.CUSTOMER_CDE=Ta2.CUSTOMER_CDE
+  WHERE 
+    PROCESS_DT < TO_DATE('{RPT_DT}','DD-MM-YY') 
+    AND PROCESS_DT >= ADD_MONTHS(TO_DATE('{RPT_DT}','DD-MM-YY'), -6)
+    AND TRAN_STATUS = 'S' 
+    AND Ta1.CUSTOMER_CDE IS NOT NULL
+),
+T2 AS (
+  SELECT 
+    CUSTOMER_CDE, 
+    MERCHANT_CDE,
+    CARDHDR_NO, 
+    TERMINAL_ID,
+    APPROVAL_CDE, 
+    RETRVL_REFNO,
+    PROCESS_DT, 
+    AMT_BILL,
+    ROW_NUMBER()OVER(PARTITION BY CUSTOMER_CDE,CARDHDR_NO, APPROVAL_CDE, RETRVL_REFNO ORDER BY PROCESS_DT DESC) AS RN
+  FROM T1
+),
+T3 AS (
+  SELECT 
+    CUSTOMER_CDE, 
+    MERCHANT_CDE, 
+    TERMINAL_ID,
+    COUNT(*) AS CT_TXN_TERMINAL,
+    SUM(AMT_BILL) AMT_BILL, 
+    ROW_NUMBER()OVER(PARTITION BY CUSTOMER_CDE ORDER BY SUM(AMT_BILL) DESC) AS RN1
+  FROM T2
+  WHERE RN = 1
+  GROUP BY CUSTOMER_CDE, MERCHANT_CDE, TERMINAL_ID
+),
+T4 AS (
+  SELECT 
+    CUSTOMER_CDE, 
+    MERCHANT_CDE, 
+    TERMINAL_ID, 
+    CT_TXN_TERMINAL,
+    AMT_BILL
+  FROM T3
+  WHERE RN1 = 1
+),
+T5 AS (
+  SELECT 
+    MERCHANT_CDE, 
+    TERMINAL_ID, 
+    TERMINAL_TYPE 
+  FROM DW_ANALYTICS.DW_CARD_TERMINAL_DIM 
+  WHERE TERMINAL_TYPE = 'POS'
+),
+T6 AS (
+  SELECT 
+    T4.CUSTOMER_CDE, 
+    T5.MERCHANT_CDE, 
+    T5.TERMINAL_ID, 
+    T4.AMT_BILL,
+    T4.CT_TXN_TERMINAL,
+    TO_CHAR(TO_DATE('{RPT_DT}','DD-MM-YY'), 'DD-MM-YYYY') AS RPT_DT, 
+    CURRENT_TIMESTAMP ADD_TSTP
+  FROM T4
+  LEFT JOIN T5 ON T4.MERCHANT_CDE = T5.MERCHANT_CDE AND T4.TERMINAL_ID = T5.TERMINAL_ID
+  WHERE T5.MERCHANT_CDE IS NOT NULL
+)
+
+SELECT * FROM T6;
