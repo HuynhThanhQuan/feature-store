@@ -1,0 +1,23 @@
+/*
+Table Name: CINS_2M_PART
+Derived From: 
+    DW_ANALYTICS.DWD_TOI_FCT: 
+        - CUSTOMER_CDE
+        - NII_DEPOSIT_MTH 
+        - NII_LOAN_MTH 
+        - NII_FEE_MTH 
+        - NII_FX_MTH
+        - PROCESS_DT
+    DW_CUSTOMER_DIM:
+        - ACTIVE
+        - CUSTOMER_CDE
+        - COMPANY_KEY
+        - SUB_SECTOR_CDE
+*/
+CREATE TABLE CINS_2M_PART (
+    PRODUCT VARCHAR2(25 BYTE),
+    CUSTOMER_CDE VARCHAR2(25 BYTE)
+);
+
+
+COMMIT;
