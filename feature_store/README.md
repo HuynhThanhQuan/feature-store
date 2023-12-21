@@ -1,8 +1,7 @@
-# sacombank
+# Feature Store
 
+## Folder Structure
 
-```
-/opt/bitnami/miniconda/bin/python main.py
+## Data Lineage
 
-\\sacombank.corp.vn\hoiso\ShareCenter\DuAn\CINS
-```
+![DataLineage](asset/FeatureStore-DataLineage.jpg)
