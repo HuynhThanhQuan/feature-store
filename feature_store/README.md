@@ -1,5 +1,17 @@
 # Feature Store
 
+## Env
+
+UAT - Jupyter Notebook
+
+| Key | Value |
+|-----|-------|
+|Protocol| https |
+|URL| cins01.apps.uat-cloud.sacombank.local|
+|Location|/opt/bitnami/jupyterhub-singleuser/hcl-quanht/feature_store|
+|Username|user2|
+|Password| (request permission)|
+
 ## Folder Structure
 
 ```lua
