@@ -1,0 +1,4 @@
+select cust_status, count(distinct customer_cde) as slkh
+from DW_ANALYTICS.DATA_RPT_SLKH_CUST_PRODUCT_ALL
+group by cust_status;
+
