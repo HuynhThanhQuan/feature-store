@@ -2,7 +2,34 @@
 
 ## Env
 
-UAT - Jupyter Notebook
+### DEV
+
+### DataWarehouse
+
+|Schema|DW_ANALYTICS|
+|-----|-------|
+|Hostname|192.168.124.100|
+|Port|1521|
+|Password| (request permission)|
+|Service name| DWDEV|
+
+|Schema|CINS_ADS|
+|-----|-------|
+|Hostname|192.168.124.100|
+|Port|1521|
+|Password| (request permission)|
+|Service name| DWDEV|
+
+| Schema | CINS_SMY |
+|-----|-------|
+|Hostname|192.168.124.100|
+|Port|1521|
+|Password| (request permission)|
+|Service name| DWDEV|
+
+### UAT
+
+#### Jupyter Notebook
 
 | Key | Value |
 |-----|-------|
