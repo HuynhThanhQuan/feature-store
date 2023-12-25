@@ -1,5 +1,21 @@
 # Feature Store
 
+## Architecture
+
+### Flow
+
+Description:
+
+- Kết nối với Jupyter Notebook qua Gateway
+
+- Không thể pull/push trực tiếp code từ GitLab sang UAT-Jupyter Notebook
+
+- Bắt buộc File-Sharing (SME) qua vùng LuuTruTam (ko thể git pull/push)
+
+- Kết nối đến Oracle DB thông qua cv_Oracle API
+
+![Arch](asset/FeatureStore-Architecture.jpg)
+
 ## Env
 
 ### DEV
