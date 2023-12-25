@@ -2,7 +2,7 @@
 
 ## Architecture
 
-### Flow
+### Connection
 
 Description:
 
