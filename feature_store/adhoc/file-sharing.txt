@@ -1,4 +1,23 @@
+select count(1) from CINS_TMP_ALY_CUST_SAMPLE1;
+
 select cust_status, count(distinct customer_cde) as slkh
 from DW_ANALYTICS.DATA_RPT_SLKH_CUST_PRODUCT_ALL
 group by cust_status;
 
+select count(distinct customer_cde) as slkh
+from DW_ANALYTICS.DATA_RPT_SLKH_CUST_PRODUCT_ALL
+where tktt = 1 and credit = 1 ;
+
+select count(distinct customer_cde) as slkh
+from DW_ANALYTICS.DATA_RPT_SLKH_CUST_PRODUCT_ALL
+where tktt = 1 and credit = 0 ;
+
+select count(distinct customer_cde) as slkh
+from DW_ANALYTICS.DATA_RPT_SLKH_CUST_PRODUCT_ALL
+where tktt=1
+and cust_status in ('NGU DONG', 'DONG BANG');
+
+select count(distinct customer_cde) as slkh
+from DW_ANALYTICS.DATA_RPT_SLKH_CUST_PRODUCT_ALL
+where credit=1
+and cust_status in ('NGU DONG', 'DONG BANG');
