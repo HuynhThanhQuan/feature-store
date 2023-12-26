@@ -1,5 +1,7 @@
 # Feature Store
 
+![FeatureStore](asset/FeatureStore.png)
+
 ## Architecture
 
 ### Connection
@@ -16,11 +18,9 @@ Description:
 
 ![Arch](asset/FeatureStore-Architecture.jpg)
 
-## Env
+## Environments
 
-### DEV
-
-### DataWarehouse
+### Datawarehouse
 
 |Schema|DW_ANALYTICS|
 |-----|-------|
@@ -43,12 +43,11 @@ Description:
 |Password| (request permission)|
 |Service name| DWDEV|
 
-### UAT
-
-#### Jupyter Notebook
+### Jupyter Notebook
 
 | Key | Value |
 |-----|-------|
+|Env|UAT|
 |Protocol| https |
 |URL| cins01.apps.uat-cloud.sacombank.local|
 |Location|/opt/bitnami/jupyterhub-singleuser/hcl-quanht/feature_store|
@@ -86,9 +85,6 @@ Tất cả code SQL feature được chứa tại sql/template/feature. Lưu ý 
 Dưới đây là Concept Flow để sinh ra Feature Store
 
 ![Flow](asset/FeatureStore-FeatureStoreFlow.jpg)
-
-
-
 
 ## Data Lineage
 
