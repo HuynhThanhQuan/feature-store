@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .git-credentials
 **/.ipynb_checkpoints
 **/__pycache__
@@ -7,8 +6,4 @@
 **/output/**
 .vscode
 **.tar
-=======
-**.log
-__pycache__/
-.vscode/
->>>>>>> second/master
+**.tar.gz
