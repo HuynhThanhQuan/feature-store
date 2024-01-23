@@ -19,6 +19,7 @@ from dateutil.relativedelta import relativedelta
 import pandas as pd
 import numpy as np
 import joblib, json, pickle
+import pathlib
 
 # Sklearn * model
 from sklearn import metrics 
@@ -31,21 +32,21 @@ import catboost
 sys.path.append('../..')
 print('Add path ../..')
 
-from oraDB import oraDB
-conn, cur = oraDB.connect()
-print('Connected DB - conn')
+# from oraDB import oraDB
+# conn, cur = oraDB.connect()
+# print('Connected DB - conn')
 
-from oraDW_ANALYTICS import oraDW_ANALYTICS
-conn_aly, cur_aly = oraDW_ANALYTICS.connect()
-print('Connected oraDW_ANALYTICS - conn_aly')
+# from oraDW_ANALYTICS import oraDW_ANALYTICS
+# conn_aly, cur_aly = oraDW_ANALYTICS.connect()
+# print('Connected oraDW_ANALYTICS - conn_aly')
 
-def download_or_reload(saved_file, query):
-    if not os.path.exists(saved_file):
-        cur.execute(query)
-        result = cur.fetchall()
-        column_names = [c[0] for c in cur.description]
-        df = pd.DataFrame(result, columns=column_names)
-        df.to_pickle(saved_file)
-    df = pd.read_pickle(saved_file)
-    print(f'Len {len(df)}')
-    return df
+# def download_or_reload(saved_file, query):
+#     if not os.path.exists(saved_file):
+#         cur.execute(query)
+#         result = cur.fetchall()
+#         column_names = [c[0] for c in cur.description]
+#         df = pd.DataFrame(result, columns=column_names)
+#         df.to_pickle(saved_file)
+#     df = pd.read_pickle(saved_file)
+#     print(f'Len {len(df)}')
+#     return df
