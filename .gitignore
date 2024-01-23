@@ -6,3 +6,6 @@
 **/output/**
 .vscode
 **.tar
+**.pkl
+fis/data/**
+feature_store/adhoc
