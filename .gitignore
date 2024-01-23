@@ -9,3 +9,4 @@
 **.pkl
 fis/data/**
 feature_store/adhoc
+**.tar.gz
