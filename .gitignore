@@ -8,5 +8,5 @@
 **.tar
 **.pkl
 fis/data/**
-feature_store/adhoc
+feature_store/adhoc/**
 **.tar.gz
