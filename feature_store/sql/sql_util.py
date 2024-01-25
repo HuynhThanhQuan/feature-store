@@ -53,7 +53,7 @@ def gen_run_oneoff_script():
     tables, features = [], []
 
     # Test
-    tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS']
+    tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
     features = [
         'REACTIVATED',
         'CASA_HOLD', 'CARD_CREDIT_HOLD', 'EB_SACOMPAY_HOLD', 'EB_MBIB_HOLD',
