@@ -11,3 +11,4 @@ fis/data/**
 feature_store\adhoc\analyse-db\DW_ANALYTICS\img
 **.tar.gz
 **/data/**
+**/out/**
