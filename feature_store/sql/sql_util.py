@@ -40,11 +40,11 @@ def split_each_feature_into_a_file():
 
 def gen_run_oneoff_script():
     # Config
-    sel_date = '11-06-2023'
+    sel_date = '01-06-2023'
     sel_date_tbl = sel_date.replace('-','')
-    output_dev = f'./script/FS_dev_{sel_date_tbl}.sql'
-    output_prod = f'./script/FS_prod_{sel_date_tbl}.sql'
-    table_template = './template/table'
+    output_dev = f'./out/FS_dev_{sel_date_tbl}.sql'
+    output_prod = f'./out/FS_prod_{sel_date_tbl}.sql'
+    table_template = './template/'
     feat_template = './template/feature'
     tbl_nm = 'CINS_FEATURE_STORE_V2'
 
@@ -57,7 +57,6 @@ def gen_run_oneoff_script():
     features = [
         'REACTIVATED',
         'CASA_HOLD', 'CARD_CREDIT_HOLD', 'EB_SACOMPAY_HOLD', 'EB_MBIB_HOLD',
-        'TOI_CARD_Y1', 
         'LIFE_STG', 'AREA',
         'LOR', 'CREDIT_SCORE',
         'CASA_SUM_BAL_NOW', 'CASA_DAY_SINCE_LAST_TXN', 
@@ -77,10 +76,15 @@ def gen_run_oneoff_script():
 
     # Read CREATE & INSERT INTO table scripts first
     for t in tables:
-        create_sql_fp = os.path.join(table_template, t + '.sql')
+        create_sql_fp = os.path.join(table_template, 'ddl', t + '.sql')
         create_script = util_func.read_sql_file(create_sql_fp)
         if create_script:
             scripts.append(create_script)
+        insert_sql_fp = os.path.join(table_template, 'dml', t + '.sql')
+        insert_script = util_func.read_sql_file(insert_sql_fp)
+        if insert_script:
+            scripts.append(insert_script)
+        
         
     # Read Feature
     print(f'Num features {len(features)}')
