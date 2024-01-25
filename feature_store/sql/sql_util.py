@@ -99,7 +99,15 @@ def gen_run_oneoff_script():
             print('missed')
     
     # Aggregated
-    final_script = COMMIT_CHECKPOINT.join(scripts)
+    # Check SQL script ended properly
+    proper_scripts = []
+    for s in scripts:
+        if not s.strip().endswith(';'):
+            proper_scripts.append(s + ';')
+        else:
+            proper_scripts.append(s)
+
+    final_script = COMMIT_CHECKPOINT.join(proper_scripts)
 
     final_script += COMMIT_CHECKPOINT
 
