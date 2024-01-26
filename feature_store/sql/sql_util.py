@@ -39,21 +39,31 @@ def split_each_feature_into_a_file():
 
 
 def gen_run_oneoff_script():
-    # Config
+    # report date
     sel_date = '01-06-2023'
     sel_date_tbl = sel_date.replace('-','')
+
+    # config
     output_dev = f'./out/FS_dev_{sel_date_tbl}.sql'
     output_prod = f'./out/FS_prod_{sel_date_tbl}.sql'
     table_template = './template/'
     feat_template = './template/feature'
-    tbl_nm = 'CINS_FEATURE_STORE_V2'
-
 
     # Default
     tables, features = [], []
 
     # Test
-    tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
+    ## Table to be inserted data (feature-store table)
+    tbl_nm = 'CINS_FEATURE_STORE_REACTIVATED'
+
+    ## Truncate or drop
+    truncate_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
+    ## Create table
+    create_tables = ['CINS_FEATURE_STORE_REACTIVATED']
+    ## Insert table
+    insert_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM',]
+
+    ## Feature
     features = [
         'REACTIVATED',
         'CASA_HOLD', 'CARD_CREDIT_HOLD', 'EB_SACOMPAY_HOLD', 'EB_MBIB_HOLD',
@@ -66,25 +76,23 @@ def gen_run_oneoff_script():
     
     # Generate
     scripts = []
-    # Drop tables first
-    for t in tables:
-        if t not in ['CINS_2M_PART', 'CINS_FEATURE_STORE_V2']:
-            drop_sql = f"DROP TABLE {t}_{sel_date_tbl}"
-        else:
-            drop_sql = f"DROP TABLE {t}"
-        scripts.append(drop_sql)
 
-    # Read CREATE & INSERT INTO table scripts first
-    for t in tables:
+    # Drop tables first
+    for t in truncate_tables:
+        truncate_sql = f"TRUNCATE TABLE {t}"
+        scripts.append(truncate_sql)
+
+    for t in create_tables:
         create_sql_fp = os.path.join(table_template, 'ddl', t + '.sql')
         create_script = util_func.read_sql_file(create_sql_fp)
         if create_script:
             scripts.append(create_script)
+
+    for t in insert_tables:
         insert_sql_fp = os.path.join(table_template, 'dml', t + '.sql')
         insert_script = util_func.read_sql_file(insert_sql_fp)
         if insert_script:
             scripts.append(insert_script)
-        
         
     # Read Feature
     print(f'Num features {len(features)}')
