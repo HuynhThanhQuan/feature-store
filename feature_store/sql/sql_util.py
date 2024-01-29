@@ -40,7 +40,7 @@ def split_each_feature_into_a_file():
 
 def gen_run_oneoff_script():
     # report date
-    sel_date = '01-06-2023'
+    sel_date = '01-12-2023'
     sel_date_tbl = sel_date.replace('-','')
 
     # config
@@ -57,9 +57,11 @@ def gen_run_oneoff_script():
     tbl_nm = 'CINS_FEATURE_STORE_REACTIVATED'
 
     ## Truncate or drop
-    truncate_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
+    # truncate_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
+    truncate_tables = []
     ## Create table
-    create_tables = ['CINS_FEATURE_STORE_REACTIVATED']
+    # create_tables = ['CINS_FEATURE_STORE_REACTIVATED']
+    create_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
     ## Insert table
     insert_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM',]
 
