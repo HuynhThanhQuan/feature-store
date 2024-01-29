@@ -79,7 +79,7 @@ def gen_run_oneoff_script():
 
     # Drop tables first
     for t in truncate_tables:
-        truncate_sql = f"TRUNCATE TABLE {t}"
+        truncate_sql = f"TRUNCATE TABLE {t}_{sel_date_tbl}"
         scripts.append(truncate_sql)
 
     for t in create_tables:
