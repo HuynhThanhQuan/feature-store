@@ -38,9 +38,8 @@ def split_each_feature_into_a_file():
                     print(f'Feature {idx} is {feat_nm}')
 
 
-def gen_run_oneoff_script():
-    # report date
-    sel_date = '01-12-2023'
+def gen_run_oneoff_script(sel_date):
+    
     sel_date_tbl = sel_date.replace('-','')
 
     # config
@@ -61,13 +60,12 @@ def gen_run_oneoff_script():
     truncate_tables = []
     ## Create table
     # create_tables = ['CINS_FEATURE_STORE_REACTIVATED']
-    create_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
+    create_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM']
     ## Insert table
-    insert_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM',]
+    insert_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM',]
 
     ## Feature
     features = [
-        'REACTIVATED',
         'CASA_HOLD', 'CARD_CREDIT_HOLD', 'EB_SACOMPAY_HOLD', 'EB_MBIB_HOLD',
         'LIFE_STG', 'AREA',
         'LOR', 'CREDIT_SCORE',
@@ -140,6 +138,24 @@ def gen_run_oneoff_script():
     with open(output_prod, 'w') as f:
         f.writelines(final_script_prod)
     print('Done')
+
+def gen_run_oneoff_script_many_dates():
+    sel_dates = [
+        '01-01-2023',
+        '01-02-2023',
+        '01-03-2023',
+        '01-04-2023',
+        '01-05-2023',
+        '01-06-2023',
+        '01-07-2023',
+        '01-08-2023',
+        '01-09-2023',
+        '01-10-2023',
+        '01-11-2023',
+        '01-12-2023',
+    ]
+    for sel_date in sel_dates:
+        gen_run_oneoff_script(sel_date)
 
 
 @DeprecationWarning
@@ -245,6 +261,6 @@ def gen_derived_feature_scripts_from_base_feature():
     
 if __name__ == '__main__':    
     # split_each_feature_into_a_file()
-    gen_run_oneoff_script()
+    gen_run_oneoff_script_many_dates()
     # get_backfill_info()
     # gen_derived_feature_scripts_from_base_feature()
