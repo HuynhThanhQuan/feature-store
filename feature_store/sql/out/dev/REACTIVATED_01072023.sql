@@ -46,3 +46,6 @@ T6 AS (
     FROM T5
 )
 SELECT * FROM T6;
+
+
+COMMIT;
