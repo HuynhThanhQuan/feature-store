@@ -53,7 +53,7 @@ def gen_run_oneoff_script(sel_date):
 
     # Test
     ## Table to be inserted data (feature-store table)
-    tbl_nm = 'CINS_FEATURE_STORE_REACTIVATED'
+    tbl_nm = f'CINS_FEATURE_STORE_REACTIVATED_{sel_date_tbl}'
 
     ## Truncate or drop
     # truncate_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
@@ -77,7 +77,7 @@ def gen_run_oneoff_script(sel_date):
     # Generate
     scripts = []
 
-    # Drop tables first
+    # DDL 
     for t in truncate_tables:
         truncate_sql = f"TRUNCATE TABLE {t}_{sel_date_tbl}"
         scripts.append(truncate_sql)
@@ -93,8 +93,15 @@ def gen_run_oneoff_script(sel_date):
         insert_script = util_func.read_sql_file(insert_sql_fp)
         if insert_script:
             scripts.append(insert_script)
+
+    # Create table with RPT_DT
+    create_sql_fp = os.path.join(table_template, 'ddl', 'CINS_FEATURE_STORE_REACTIVATED.sql')
+    create_script = util_func.read_sql_file(create_sql_fp)
+    create_script = create_script.replace('CINS_FEATURE_STORE_REACTIVATED',tbl_nm)
+        if create_script:
+            scripts.append(create_script)
         
-    # Read Feature
+    # DML
     print(f'Num features {len(features)}')
     for f in features:
         print(f, end=' ')
