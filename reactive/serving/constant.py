@@ -8,5 +8,3 @@ RAW_FEATURE_NAMES = [
 ]
 
 LABEL = 'REACTIVATED'
-
-
