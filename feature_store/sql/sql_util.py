@@ -56,6 +56,7 @@ def gen_run_oneoff_script(sel_date):
     tbl_nm = f'CINS_FEATURE_STORE_REACTIVATED_{sel_date_tbl}'
 
     ## Truncate or drop
+    drop_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_FEATURE_STORE_REACTIVATED']
     # truncate_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
     truncate_tables = []
     ## Create table
@@ -78,6 +79,10 @@ def gen_run_oneoff_script(sel_date):
     scripts = []
 
     # DDL 
+    for t in drop_tables:
+        drop_sql = f"DROP TABLE {t}_{sel_date_tbl}"
+        scripts.append(drop_sql)
+
     for t in truncate_tables:
         truncate_sql = f"TRUNCATE TABLE {t}_{sel_date_tbl}"
         scripts.append(truncate_sql)
