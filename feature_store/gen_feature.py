@@ -1,6 +1,5 @@
 import os
 from oraDB import oraDB
-import cx_Oracle
 import re
 import util
 # Set up logging
@@ -48,10 +47,6 @@ def run_feature_record_query_with_cur(f_record, cur):
         else:
             logger.debug(f'[WARN] Succeed INSERT {num_rows} features script {desc}')
         f_record['query_status'] = 'passed'
-    except cx_Oracle.DatabaseError as e:
-        logger.error(e)
-        logger.error(f'Failed to execute query record {f_record}')
-        f_record['query_status'] = 'failed'
     except Exception as er:
         logger.error(er)
         logger.error(f'Failed to execute query record {f_record}')

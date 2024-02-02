@@ -38,55 +38,75 @@ def split_each_feature_into_a_file():
                     print(f'Feature {idx} is {feat_nm}')
 
 
-def gen_run_oneoff_script():
-    # Config
-    sel_date = '11-06-2023'
+def gen_run_oneoff_script(sel_date):
+    
     sel_date_tbl = sel_date.replace('-','')
-    output_dev = f'./script/FS_dev_{sel_date_tbl}.sql'
-    output_prod = f'./script/FS_prod_{sel_date_tbl}.sql'
-    table_template = './template/table'
-    feat_template = './template/feature'
-    tbl_nm = 'CINS_FEATURE_STORE_V2'
 
+    # config
+    output_dev = f'./out/FS_dev_{sel_date_tbl}.sql'
+    output_prod = f'./out/FS_prod_{sel_date_tbl}.sql'
+    table_template = './template/'
+    feat_template = './template/feature'
 
     # Default
     tables, features = [], []
 
     # Test
-    # tables = ['CINS_2M_PART', 'CINS_TMP_LST']
+    ## Table to be inserted data (feature-store table)
+    tbl_nm = f'CINS_FEATURE_STORE_REACTIVATED_{sel_date_tbl}'
+
+    ## Truncate or drop
+    drop_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_FEATURE_STORE_REACTIVATED']
+    # truncate_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
+    truncate_tables = []
+    ## Create table
+    # create_tables = ['CINS_FEATURE_STORE_REACTIVATED']
+    create_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM']
+    ## Insert table
+    insert_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM',]
+
+    ## Feature
     features = [
-        # 'CASA_ACCT_ACTIVE_CT_12M','CASA_ACCT_CT_36M',
-        # 'CASA_BAL_AVG_12M','CASA_BAL_AVG_1M','CASA_BAL_AVG_3M','CASA_BAL_AVG_6M',
-        # 'CASA_BAL_MAX_12M','CASA_BAL_MAX_1M','CASA_BAL_MAX_3M','CASA_BAL_MAX_6M',
-        # 'CASA_BAL_MIN_12M','CASA_BAL_MIN_1M','CASA_BAL_MIN_3M','CASA_BAL_MIN_6M',
-        # 'CASA_BAL_SUM_12M','CASA_BAL_SUM_1M','CASA_BAL_SUM_3M','CASA_BAL_SUM_6M',
-        # 'CASA_BAL_SUM_NOW','CASA_DAY_SINCE_LAST_TXN_CT_36M',
-        # 'CASA_TXN_AMT_AVG_12M','CASA_TXN_AMT_AVG_1M','CASA_TXN_AMT_AVG_3M','CASA_TXN_AMT_AVG_6M',
-        # 'CASA_TXN_AMT_MAX_12M','CASA_TXN_AMT_MAX_1M','CASA_TXN_AMT_MAX_3M','CASA_TXN_AMT_MAX_6M',
-        # 'CASA_TXN_AMT_MIN_12M','CASA_TXN_AMT_MIN_1M','CASA_TXN_AMT_MIN_3M','CASA_TXN_AMT_MIN_6M',
-        # 'CASA_TXN_AMT_SUM_12M','CASA_TXN_AMT_SUM_1M','CASA_TXN_AMT_SUM_3M','CASA_TXN_AMT_SUM_6M',
-        # 'CASA_TXN_CT_12M','CASA_TXN_CT_1M','CASA_TXN_CT_3M','CASA_TXN_CT_6M',
-        'CASA_ACCT_COMBO_CT_36M', 'CASA_ACCT_PAYROLL_CT_36M'
+        'CASA_HOLD', 'CARD_CREDIT_HOLD', 'EB_SACOMPAY_HOLD', 'EB_MBIB_HOLD',
+        'LIFE_STG', 'AREA',
+        'LOR', 'CREDIT_SCORE',
+        'CASA_BAL_SUM_NOW', 'CASA_DAY_SINCE_LAST_TXN_CT_36M', 
+        'CARD_CREDIT_MAX_LIMIT', 'CARD_CREDIT_SUM_BAL_NOW', 
+        'EB_SACOMPAY_DAY_SINCE_LTST_LOGIN', 'EB_SACOMPAY_DAY_SINCE_LTST_TXN', 'EB_MBIB_DAY_SINCE_ACTIVE',
     ]
     
     # Generate
     scripts = []
-    # Drop tables first
-    for t in tables:
-        if t not in ['CINS_2M_PART', 'CINS_FEATURE_STORE_V2']:
-            drop_sql = f"DROP TABLE {t}_{sel_date_tbl}"
-        else:
-            drop_sql = f"DROP TABLE {t}"
+
+    # DDL 
+    for t in drop_tables:
+        drop_sql = f"DROP TABLE {t}_{sel_date_tbl}"
         scripts.append(drop_sql)
 
-    # Read CREATE & INSERT INTO table scripts first
-    for t in tables:
-        create_sql_fp = os.path.join(table_template, t + '.sql')
+    for t in truncate_tables:
+        truncate_sql = f"TRUNCATE TABLE {t}_{sel_date_tbl}"
+        scripts.append(truncate_sql)
+
+    for t in create_tables:
+        create_sql_fp = os.path.join(table_template, 'ddl', t + '.sql')
         create_script = util_func.read_sql_file(create_sql_fp)
         if create_script:
             scripts.append(create_script)
+
+    for t in insert_tables:
+        insert_sql_fp = os.path.join(table_template, 'dml', t + '.sql')
+        insert_script = util_func.read_sql_file(insert_sql_fp)
+        if insert_script:
+            scripts.append(insert_script)
+
+    # Create table with RPT_DT
+    create_sql_fp = os.path.join(table_template, 'ddl', 'CINS_FEATURE_STORE_REACTIVATED.sql')
+    create_script = util_func.read_sql_file(create_sql_fp)
+    create_script = create_script.replace('CINS_FEATURE_STORE_REACTIVATED',tbl_nm)
+    if create_script:
+        scripts.append(create_script)
         
-    # Read Feature
+    # DML
     print(f'Num features {len(features)}')
     for f in features:
         print(f, end=' ')
@@ -99,7 +119,15 @@ def gen_run_oneoff_script():
             print('missed')
     
     # Aggregated
-    final_script = COMMIT_CHECKPOINT.join(scripts)
+    # Check SQL script ended properly
+    proper_scripts = []
+    for s in scripts:
+        if not s.strip().endswith(';'):
+            proper_scripts.append(s + ';')
+        else:
+            proper_scripts.append(s)
+
+    final_script = COMMIT_CHECKPOINT.join(proper_scripts)
 
     final_script += COMMIT_CHECKPOINT
 
@@ -122,6 +150,24 @@ def gen_run_oneoff_script():
     with open(output_prod, 'w') as f:
         f.writelines(final_script_prod)
     print('Done')
+
+def gen_run_oneoff_script_many_dates():
+    sel_dates = [
+        '01-01-2023',
+        '01-02-2023',
+        '01-03-2023',
+        '01-04-2023',
+        '01-05-2023',
+        '01-06-2023',
+        '01-07-2023',
+        '01-08-2023',
+        '01-09-2023',
+        '01-10-2023',
+        '01-11-2023',
+        '01-12-2023',
+    ]
+    for sel_date in sel_dates:
+        gen_run_oneoff_script(sel_date)
 
 
 @DeprecationWarning
@@ -227,6 +273,6 @@ def gen_derived_feature_scripts_from_base_feature():
     
 if __name__ == '__main__':    
     # split_each_feature_into_a_file()
-    gen_run_oneoff_script()
+    gen_run_oneoff_script_many_dates()
     # get_backfill_info()
     # gen_derived_feature_scripts_from_base_feature()
