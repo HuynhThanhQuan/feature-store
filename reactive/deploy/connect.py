@@ -1,4 +1,5 @@
 import cx_Oracle
+
 import logging
 logger = logging.getLogger(__name__)
 
