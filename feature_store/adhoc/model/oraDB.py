@@ -10,6 +10,7 @@ class oraDB:
         sname='X7DWDEV'
         user='CINS_ADS'
         password='Oracle#123'
+        
         try:
             conn = cx_Oracle.connect('{}/{}@{}:{}/{}'.format(user, password, host, str(port), sname))
             cur = conn.cursor()
@@ -24,6 +25,7 @@ class oraDB:
         sname='X7DWDEV'
         user='CINS_SMY'
         password='Oracle#123'
+        
         try:
             conn = cx_Oracle.connect('{}/{}@{}:{}/{}'.format(user, password, host, str(port), sname))
             cur = conn.cursor()

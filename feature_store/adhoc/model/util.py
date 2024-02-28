@@ -1,5 +1,6 @@
 import os
 import sys
+import pathlib
 
 # Matplotlib, Seaborn
 import seaborn as sns
@@ -27,23 +28,16 @@ import xgboost
 import lightgbm
 import catboost
 
-# Add path and connection to CISN and DW_ANALYTICS DB
-sys.path.append('../..')
-print('Add path ../..')
-
-
 from oraDB import oraDB
 conn, cur = oraDB.connect_CINS_SMY()
 print('Connected DB CINS_SMY - conn')
-conn_aly, cur_aly = oraDB.connect_DW_ANALYTICS()
-print('Connected oraDW_ANALYTICS - conn_aly')
 
 
-def download_or_reload(saved_file, query):
+def download_or_reload(saved_file, query, cursor=cur):
     if not os.path.exists(saved_file):
-        cur.execute(query)
-        result = cur.fetchall()
-        column_names = [c[0] for c in cur.description]
+        cursor.execute(query)
+        result = cursor.fetchall()
+        column_names = [c[0] for c in cursor.description]
         df = pd.DataFrame(result, columns=column_names)
         df.to_pickle(saved_file)
     df = pd.read_pickle(saved_file)
