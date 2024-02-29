@@ -20,6 +20,7 @@ class oraDB:
         start=time.time()
 
         ### connect to DB
+        conn,cur = None, None
         try:
             conn=cx_Oracle.connect('{}/{}@{}:{}/{}'.format(user,password,host,str(port),sname))
             cur=conn.cursor()

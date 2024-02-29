@@ -9,19 +9,8 @@ Babel==2.13.0
 backcall==0.2.0
 beautifulsoup4==4.12.2
 bleach==6.1.0
-boltons @ file:///C:/ci_311/boltons_1677729932371/work
 brotlipy==0.7.0
-certifi @ file:///C:/b/abs_36eb5mzhph/croot/certifi_1690232276943/work/certifi
-cffi @ file:///C:/ci_311/cffi_1676423759166/work
-charset-normalizer @ file:///tmp/build/80754af9/charset-normalizer_1630003229654/work
-colorama @ file:///C:/ci_311/colorama_1676422310965/work
 comm==0.1.4
-conda @ file:///C:/b/abs_04cd8uayv2/croot/conda_1696257511532/work
-conda-content-trust @ file:///C:/b/abs_e3bcpyv7sw/croot/conda-content-trust_1693490654398/work
-conda-libmamba-solver @ file:///C:/b/abs_a4898ikyjr/croot/conda-libmamba-solver_1696257577002/work/src
-conda-package-handling @ file:///C:/b/abs_b9wp3lr1gn/croot/conda-package-handling_1691008700066/work
-conda_package_streaming @ file:///C:/b/abs_6c28n38aaj/croot/conda-package-streaming_1690988019210/work
-cryptography @ file:///C:/b/abs_f4do8t8jfs/croot/cryptography_1694444424531/work
 cycler==0.12.1
 debugpy==1.8.0
 decorator==5.1.1
@@ -31,14 +20,12 @@ executing==2.0.0
 fastjsonschema==2.18.1
 fonttools==4.47.0
 fqdn==1.5.1
-idna @ file:///C:/ci_311/idna_1676424932545/work
 ipykernel==6.25.2
 ipython==8.16.1
 isoduration==20.11.0
 jedi==0.19.1
 Jinja2==3.1.2
 json5==0.9.14
-jsonpatch @ file:///tmp/build/80754af9/jsonpatch_1615747632069/work
 jsonpointer==2.1
 jsonschema==4.19.1
 jsonschema-specifications==2023.7.1
@@ -52,10 +39,8 @@ jupyterlab==4.0.7
 jupyterlab-pygments==0.2.2
 jupyterlab_server==2.25.0
 kiwisolver==1.4.5
-libmambapy @ file:///C:/b/abs_71g8gec0dd/croot/mamba-split_1694187821755/work/libmambapy
 MarkupSafe==2.1.3
 matplotlib-inline==0.1.6
-menuinst @ file:///C:/ci_311/menuinst_1678730372782/work
 mistune==3.0.2
 nbclient==0.8.0
 nbconvert==7.9.2
@@ -65,36 +50,26 @@ notebook_shim==0.2.3
 numpy==1.26.3
 openpyxl==3.1.2
 overrides==7.4.0
-packaging @ file:///C:/b/abs_28t5mcoltc/croot/packaging_1693575224052/work
 pandocfilters==1.5.0
 parso==0.8.3
 pickleshare==0.7.5
 pillow==10.2.0
 platformdirs==3.11.0
-pluggy @ file:///C:/ci_311/pluggy_1676422178143/work
 prometheus-client==0.17.1
 prompt-toolkit==3.0.39
 psutil==5.9.6
 pure-eval==0.2.2
-pycosat @ file:///C:/b/abs_31zywn1be3/croot/pycosat_1696537126223/work
-pycparser @ file:///tmp/build/80754af9/pycparser_1636541352034/work
 Pygments==2.16.1
-pyOpenSSL @ file:///C:/b/abs_08f38zyck4/croot/pyopenssl_1690225407403/work
 pyparsing==3.1.1
-PySocks @ file:///C:/ci_311/pysocks_1676425991111/work
 python-dateutil==2.8.2
 python-json-logger==2.0.7
 pytz==2023.3.post1
-pywin32==306
-pywinpty==2.0.12
 PyYAML==6.0.1
 pyzmq==25.1.1
 referencing==0.30.2
-requests @ file:///C:/b/abs_316c2inijk/croot/requests_1690400295842/work
 rfc3339-validator==0.1.4
 rfc3986-validator==0.1.1
 rpds-py==0.10.6
-ruamel.yaml @ file:///C:/ci_311/ruamel.yaml_1676439214109/work
 Send2Trash==1.8.2
 six==1.16.0
 sniffio==1.3.0
@@ -103,16 +78,12 @@ stack-data==0.6.3
 terminado==0.17.1
 tinycss2==1.2.1
 tornado==6.3.3
-tqdm @ file:///C:/b/abs_f76j9hg7pv/croot/tqdm_1679561871187/work
 traitlets==5.11.2
-truststore @ file:///C:/b/abs_55z7b3r045/croot/truststore_1695245455435/work
 types-python-dateutil==2.8.19.14
 tzdata==2023.4
 uri-template==1.3.0
-urllib3 @ file:///C:/b/abs_889_loyqv4/croot/urllib3_1686163174463/work
 wcwidth==0.2.8
 webcolors==1.13
 webencodings==0.5.1
 websocket-client==1.6.4
-win-inet-pton @ file:///C:/ci_311/win_inet_pton_1676425458225/work
 zstandard==0.19.0
