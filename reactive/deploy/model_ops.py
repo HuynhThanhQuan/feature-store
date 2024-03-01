@@ -23,9 +23,9 @@ def evaluate_metric(y, y_pred, y_prob):
     p,r,f,_ = metrics.precision_recall_fscore_support(y, y_pred)
     auc = metrics.roc_auc_score(y, y_prob[:,1])
     gini = 2 * auc - 1
-    print(p,r,f)
-    print(auc, gini)
-    print(metrics.classification_report(y, y_pred))
+    logger.info(f'Precision {p}, Recall: {r}, F1-score: {f} ')
+    logger.info(f'AUC: {auc}, Gini: {gini}')
+    logger.info(f'\n{metrics.classification_report(y, y_pred)}')
 
 
 def evaluate(model, X, y, eval_metric=True):
