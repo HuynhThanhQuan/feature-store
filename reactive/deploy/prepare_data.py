@@ -28,6 +28,7 @@ class DataHandler:
         self.fmt_fp = self.report_date_loc / 'FEATURE_DATA_FMT'
         self.data_label_fp = self.report_date_loc / 'DATA_LABEL'
         self.label_fp = self.report_date_loc / constant.LABEL
+        self.score_fp = self.report_date_loc / 'SCORE_REACTIVE'
         self.target_columns = target_columns
         self.reload_local_file = reload_local_file
         self.overwrite_tmp_file = overwrite_tmp_file

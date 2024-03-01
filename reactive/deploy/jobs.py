@@ -61,9 +61,7 @@ class ReactiveJobHandler:
         predictor = Predictor(self.config['model_path'])
         for dt in self.config['test_date']:
             logger.info(f'Testing {dt} data')
-            data_handler = DataHandler(dt, 
-                                    reload_local_file=self.config['reload_local_file'], 
-                                    overwrite_tmp_file=self.config['overwrite_tmp_file'])
+            data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'], overwrite_tmp_file=self.config['overwrite_tmp_file'])
             data_label = data_handler.get_data_label()
             y = data_label.pop(constant.LABEL)
             X = data_label
@@ -73,22 +71,24 @@ class ReactiveJobHandler:
         predictor = Predictor(self.config['model_path'])
         for dt in self.config['report_date']:
             logger.info(f'Serving {dt} data')
-            data_handler = DataHandler(dt, 
-                                    reload_local_file=self.config['reload_local_file'], 
-                                    overwrite_tmp_file=self.config['overwrite_tmp_file'])
+            # Get data handler of report date
+            data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'], overwrite_tmp_file=self.config['overwrite_tmp_file'])
             data = data_handler.get_formatted_raw_feature_data()
+            # Scoring
             score = predictor.score(data)
             score = score[:, 1]
             score_df = pd.DataFrame({
                 'CUSTOMER_CDE': data.index,
                 'SCORE': score, 
             })
+            # Sorting in probability descending
             logger.info('Sorting best customer')
             score_df = score_df.sort_values(by='SCORE', ascending=False).reset_index(drop=True)
-            score_fn = f'./out/SCORE_{dt}'
+            score_fn = data_handler.score_fp
             score_df.to_parquet(score_fn)
             logger.info(f'Stored data at {score_fn}')
             if self.config['sync_db']:
+                database_jobs.push_score_to_DW(score_fn, dt, self.config)
                 logger.info(f'Finished insert REACTIVATED SCORE {dt}')
 
     def adhoc(self):
@@ -97,20 +97,15 @@ class ReactiveJobHandler:
         """
         if self.config['task'] == 'push_raw_data':
             logger.info('Prepare pushing raw matrix data to DW')
-                util_database_jobs.push_score_to_DW(self.config[' dt'])
             for dt in self.config['report_date']:
-                data_handler = DataHandler(dt, 
-                                        reload_local_file=self.config['reload_local_file'],
-                                        overwrite_tmp_file=self.config['overwrite_tmp_file'])
+                data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'],overwrite_tmp_file=self.config['overwrite_tmp_file'])
                 data = data_handler.get_formatted_raw_feature_data()
                 logger.info(f'Data shape {data.shape}')
+                database_jobs.push_raw_matrix_data_to_DW(data,self.config, dt)
         elif self.config['task'] == 'get_label':
-            logger.info('Prepare getting label')
             for dt in self.config['report_date']:
-                data_handler = DataHandler(dt, 
-                                        reload_local_file=self.config['reload_local_file'],
-                                        overwrite_tmp_file=self.config['overwrite_tmp_file'])
+                logger.info(f'Prepare getting label {dt}')
+                data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'],overwrite_tmp_file=self.config['overwrite_tmp_file'])
                 data_handler.get_label()
         else:
-                util_database_jobs.push_raw_matrix_data_to_DW(data, self.config[' dt'])
             logger.warn(f'{self.config["task"]} task is unimplemented')

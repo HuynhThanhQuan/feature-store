@@ -14,8 +14,7 @@ logger = logging.getLogger(__name__)
 engine, connection = oraDB.connect_CINS_SMY()
 
 
-def push_score_to_DW(config, report_date):
-    score_fn = f'./out/SCORE_{report_date}'
+def push_score_to_DW(score_fn, report_date, config):
     if os.path.exists(score_fn):
         score_df = pd.read_parquet(score_fn)
         total_rows = len(score_df)
@@ -45,7 +44,7 @@ def iterate_push_batch_data(data, query, config):
     logging.info(f'Total rows: {total_rows}')
     
     num_batches = int(np.ceil(total_rows/config['batch_size']))
-    logging.info(f'Batch size/Total batches: {config['batch_size']} / {num_batches}')
+    logging.info(f'Batch size/Total batches: {config["batch_size"]} / {num_batches}')
     
     # Insert values into table batch-by-batch
     for i in range(num_batches):
@@ -57,8 +56,7 @@ def iterate_push_batch_data(data, query, config):
         batch_data = data.iloc[start:end].to_numpy()
         batch_data = np.where(pd.isnull(batch_data), None, batch_data)
         batch_data = [tuple(row) for row in batch_data]
-        connection.executemany(query, batch_data)
-        engine.commit()
+        connection.execute(query, batch_data)
     
         
 def push_raw_matrix_data_to_DW(data, config, dt):
