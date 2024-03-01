@@ -1,34 +1,17 @@
 import cx_Oracle
-
+from sqlalchemy import create_engine
+import pandas as pd
+import os
 import logging
 logger = logging.getLogger(__name__)
 
+os.environ['HTTPS_PROXY'] = "http://proxy365.sacombank.com:1985"
+
+cx_Oracle.init_oracle_client()
 
 class oraDB:
-    def connect_CINS_ADS():
-        host='192.168.124.204'
-        port= 1521
-        sname='X7DWDEV'
-        user='CINS_ADS'
-        password='Oracle#123'
-        try:
-            conn = cx_Oracle.connect('{}/{}@{}:{}/{}'.format(user, password, host, str(port), sname))
-            cur = conn.cursor()
-        except Exception as e:
-            logger.error("ErrMsg: "+str(e))
-            logger.error("Connect to DB failed!")
-        return conn, cur
-    
     def connect_CINS_SMY():
-        host='192.168.124.204'
-        port= 1521
-        sname='X7DWDEV'
-        user='CINS_SMY'
-        password='Oracle#123'
-        try:
-            conn = cx_Oracle.connect('{}/{}@{}:{}/{}'.format(user, password, host, str(port), sname))
-            cur = conn.cursor()
-        except Exception as e:
-            logger.error("ErrMsg: "+str(e))
-            logger.error("Connect to DB failed!")
-        return conn, cur
+        engine = create_engine(f"oracle://CINS_SMY:Oracle#123@192.168.124.204:1521/?service_name=X7DWDEV")
+        connection = engine.connect()
+
+        return engine, connection
