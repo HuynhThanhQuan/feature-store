@@ -1,14 +1,14 @@
 import os
+import pandas as pd
 import pathlib
+
 import sql_template
-import util
 import constant
-import logging
-import preprocessing
+import preprocessor
 import pickle
 import util
-import pandas as pd
 
+import logging
 logger = logging.getLogger(__name__) 
 
 
@@ -104,7 +104,7 @@ class DataHandler:
         logger.info('Prepare loading formatted-raw feature data ')
         if (not self.reload_local_file) or (not os.path.exists(self.fmt_fp) or (self.overwrite_tmp_file)):
             df = self.get_ordered_raw_feature_data()
-            df = preprocessing.format_datatype(df)
+            df = preprocessor.format_datatype(df)
             df.to_parquet(self.fmt_fp)
             return df
         else:

@@ -4,10 +4,13 @@ import logging
 from datetime import datetime
 import argparse
 import yaml
+
+
 import jobs
+import workspace
 
 
-def configure_logging(log_level='INFO'):
+def config_logging(log_level='INFO'):
     """
     Configure Logging
     1. Stdout
@@ -36,29 +39,10 @@ def configure_logging(log_level='INFO'):
     logger.addHandler(file_handler)
 
 
-def run(args):
-    # Config Logging
-    configure_logging(args.log)
+def run_job(config):
+    job_handler = jobs.ReactiveJobHandler(config)
+    job_handler.run()
     
-    # Config ML jobs
-    ml_config = {}
-    config_fp = f'./config/{args.job}.yaml'
-    with open(config_fp, 'r') as f:
-        ml_config.update(yaml.safe_load(f))
-    logging.info(ml_config)
-    logging.debug(f'{args}')
-    
-    # Run selected ML job
-    if args.job == 'train':
-        jobs.train(args, ml_config)
-    elif args.job == 'test':
-        jobs.test(args, ml_config)
-    elif args.job == 'serve':
-        jobs.serve(args, ml_config)
-    elif args.job == 'adhoc':
-        jobs.adhoc(args, ml_config)
-    
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -75,5 +59,7 @@ if __name__ == "__main__":
     parser.set_defaults(reload_local_file=True)
     parser.set_defaults(overwrite_tmp_file=False)
     args = parser.parse_args()
+    config_logging(args.log)
     
-    run(args)
+    config = workspace.setup(args)
+    run_job(config)

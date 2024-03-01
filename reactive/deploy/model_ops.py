@@ -1,5 +1,6 @@
 import pathlib
 import os
+import pickle
 
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
@@ -7,15 +8,12 @@ from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn import metrics
-from xgboost import XGBClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
 
-import pickle
 
 import logging
-
-
 logger = logging.getLogger(__name__)
 
 

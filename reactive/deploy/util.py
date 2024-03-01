@@ -1,6 +1,8 @@
 import pandas as pd
 import os
-from connect import oraDB
+
+from database_connector import oraDB
+
 import logging
 logger = logging.getLogger(__name__) 
 

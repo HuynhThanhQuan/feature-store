@@ -1,0 +1,3 @@
+model: 'XGBoost'
+model_path: './model/pipeline_xgboost'
+sync_db: True
