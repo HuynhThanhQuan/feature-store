@@ -1,5 +1,3 @@
-# /opt/bitnami/miniconda/bin/python main.py
-
 import os
 import sys
 import pathlib
@@ -18,7 +16,11 @@ from model_ops import Trainer, Predictor
 
 
 def configure_logging(log_level='INFO'):
-    # Configure Logging
+    """
+    Configure Logging
+    1. Stdout
+    2. File
+    """ 
     numeric_level = getattr(logging, log_level, None)
     if not isinstance(numeric_level, int):
         raise ValueError('Invalid log level: %s' % log_level)
@@ -41,7 +43,10 @@ def configure_logging(log_level='INFO'):
     logger.addHandler(file_handler)
     
 
-def train_model(args, ml_config):
+def train(args, ml_config):
+    """
+    Training model with options 
+    """
     def prepare_dataset(dataset_dates):
         df = None
         for d in dataset_dates:
@@ -66,6 +71,9 @@ def train_model(args, ml_config):
     
     
 def test(args, ml_config):
+    """
+    Test model with selected date
+    """
     predictor = Predictor(ml_config['model_path'])
     for dt in ml_config['test_date']:
         logging.info(f'Testing {dt} data')
@@ -103,6 +111,9 @@ def serve(args, ml_config):
             
 
 def adhoc(args, ml_config):
+    """
+    Predefined adhoc tasks
+    """
     if ml_config['task'] == 'push_raw_data':
         logging.info('Prepare pushing raw matrix data to DW')
         for dt in ml_config['report_date']:
@@ -146,7 +157,7 @@ if __name__ == "__main__":
     logging.debug(f'{args}')
     
     if args.mode == 'train':
-        train_model(args, ml_config)
+        train(args, ml_config)
     elif args.mode == 'test':
         test(args, ml_config)
     elif args.mode == 'serve':
