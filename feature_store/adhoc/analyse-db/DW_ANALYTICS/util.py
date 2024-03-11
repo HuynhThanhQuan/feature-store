@@ -14,9 +14,8 @@ sys.path.append('../../..')
 print('Add path ../../..')
 
 from oraDB import oraDB
-conn, cur = oraDB.connect()
+conn, cur = oraDB.connect_CINS_SMY()
 print('Connected DB - conn')
 
-from oraDW_ANALYTICS import oraDW_ANALYTICS
-conn_aly, cur_aly = oraDW_ANALYTICS.connect()
+conn_aly, cur_aly = oraDB.connect_DW_ANALYTICS()
 print('Connected oraDW_ANALYTICS - conn_aly')

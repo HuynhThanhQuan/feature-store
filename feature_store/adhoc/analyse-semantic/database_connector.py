@@ -40,3 +40,4 @@ class oraDB:
         connection = cx_Oracle.connect('{}/{}@{}:{}/{}'.format(user, password, host, str(port), sname))
         cursor = connection.cursor()
         return connection, cursor
+        
