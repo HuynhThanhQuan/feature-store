@@ -65,6 +65,7 @@ class Trainer:
         num1_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='constant', fill_value=0))])
         num2_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='median')), ('scaler', StandardScaler())])
         categorical_transformer = Pipeline(steps=[('encoder', OneHotEncoder(handle_unknown='ignore'))])
+        
         transformer = ColumnTransformer(
             transformers=[
                 ('num1', num1_transformer, num1feat_cols),
