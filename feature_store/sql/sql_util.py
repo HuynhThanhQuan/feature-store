@@ -43,8 +43,8 @@ def gen_run_oneoff_script(sel_date):
     sel_date_tbl = sel_date.replace('-','')
 
     # config
-    output_dev = f'./out/FS_dev_{sel_date_tbl}.sql'
-    output_prod = f'./out/FS_prod_{sel_date_tbl}.sql'
+    output_dev = f'./out/FS_dev_casa_{sel_date_tbl}.sql'
+    output_prod = f'./out/FS_prod_casa_{sel_date_tbl}.sql'
     table_template = './template/'
     feat_template = './template/feature'
 
@@ -56,23 +56,26 @@ def gen_run_oneoff_script(sel_date):
     tbl_nm = f'CINS_FEATURE_STORE_REACTIVATED_{sel_date_tbl}'
 
     ## Truncate or drop
-    drop_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM', 'CINS_FEATURE_STORE_REACTIVATED']
+    drop_tables = []
     # truncate_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CUSTOMER_STATUS', 'CINS_TMP_CARD_DIM']
     truncate_tables = []
     ## Create table
     # create_tables = ['CINS_FEATURE_STORE_REACTIVATED']
-    create_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM']
+    create_tables = []
     ## Insert table
-    insert_tables = ['CINS_TMP_CUSTOMER', 'CINS_TMP_CARD_DIM',]
+    insert_tables = []
 
     ## Feature
     features = [
-        'CASA_HOLD', 'CARD_CREDIT_HOLD', 'EB_SACOMPAY_HOLD', 'EB_MBIB_HOLD',
-        'LIFE_STG', 'AREA',
-        'LOR', 'CREDIT_SCORE',
-        'CASA_BAL_SUM_NOW', 'CASA_DAY_SINCE_LAST_TXN_CT_36M', 
-        'CARD_CREDIT_MAX_LIMIT', 'CARD_CREDIT_SUM_BAL_NOW', 
-        'EB_SACOMPAY_DAY_SINCE_LTST_LOGIN', 'EB_SACOMPAY_DAY_SINCE_LTST_TXN', 'EB_MBIB_DAY_SINCE_ACTIVE',
+        # 'CASA_HOLD', 'CARD_CREDIT_HOLD', 'EB_SACOMPAY_HOLD', 'EB_MBIB_HOLD',
+        # 'LIFE_STG', 'AREA',
+        # 'LOR', 'CREDIT_SCORE',
+        # 'CASA_BAL_SUM_NOW', 'CASA_DAY_SINCE_LAST_TXN_CT_36M', 
+        # 'CARD_CREDIT_MAX_LIMIT', 'CARD_CREDIT_SUM_BAL_NOW', 
+        # 'EB_SACOMPAY_DAY_SINCE_LTST_LOGIN', 'EB_SACOMPAY_DAY_SINCE_LTST_TXN', 'EB_MBIB_DAY_SINCE_ACTIVE',
+        'CASA_ACCT_CT_36M', 'CASA_BAL_SUM_12M', 'CASA_BAL_MAX_12M', 'CASA_ACCT_ACTIVE_CT_12M', 'CASA_TXN_AMT_SUM_12M', 'CASA_TXN_CT_12M',
+        'CASA_BAL_SUM_24M', 'CASA_BAL_SUM_36M', 'CASA_TXN_AMT_SUM_24M', 'CASA_TXN_AMT_SUM_36M', 'CASA_TXN_CT_24M', 'CASA_TXN_CT_36M',
+        'GEN_GRP', 'AGE', 'LOR', 'PROFESSION', 
     ]
     
     # Generate
@@ -234,8 +237,9 @@ def gen_derived_feature_scripts_from_base_feature():
     base_fp = './template/feature/base_feature/base'
     derived_fp = './template/feature/base_feature/derived'
 
-    features = []
+    # features = []
     # features = ['CARD_CREDIT_TXN', 'CARD_CREDIT_TXN_DOM', 'CARD_CREDIT_TXN_INTER', 'CARD_CREDIT_TXN_OFFLINE', 'CARD_CREDIT_TXN_ONLINE']
+    features = ['CASA_BAL', 'CASA_TXN_AMT']
 
 
     for feature in features:

@@ -22,6 +22,8 @@ Derived By:
     - 3M
     - 6M
     - 12M
+    - 24M
+    - 36M
 */
 INSERT INTO {TBL_NM}
 SELECT
