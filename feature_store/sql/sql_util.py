@@ -107,7 +107,8 @@ def gen_run_oneoff_script(sel_date):
     create_script = util_func.read_sql_file(create_sql_fp)
     create_script = create_script.replace('CINS_FEATURE_STORE_REACTIVATED',tbl_nm)
     if create_script:
-        scripts.append(create_script)
+        pass
+        # scripts.append(create_script)
         
     # DML
     print(f'Num features {len(features)}')
