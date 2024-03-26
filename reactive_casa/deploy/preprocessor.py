@@ -1,7 +1,5 @@
 import pandas as pd
-import logging
 import constant
-logger = logging.getLogger(__name__) 
 
 
 # def format_datatype(X):
