@@ -8,6 +8,7 @@ from prepare_data import DataHandler
 from model_ops import Trainer, Predictor
 import preprocessor
 import database_jobs
+from validator import LocalDataValidator
 
 import logging
 logger = logging.getLogger(__name__) 
@@ -96,16 +97,25 @@ class ReactiveJobHandler:
         Predefined adhoc tasks
         """
         if self.config['task'] == 'push_raw_data':
-            logger.info('Prepare pushing raw matrix data to DW')
+            logger.info('Adhoc: Push raw data into DW')
             for dt in self.config['report_date']:
-                data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'],overwrite_tmp_file=self.config['overwrite_tmp_file'])
+                logger.info(f'Pushing raw matrix data {dt}')
+                data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'], overwrite_tmp_file=self.config['overwrite_tmp_file'])
                 data = data_handler.get_formatted_raw_feature_data()
                 logger.info(f'Data shape {data.shape}')
                 database_jobs.push_raw_matrix_data_to_DW(data,self.config, dt)
         elif self.config['task'] == 'get_label':
+            logger.info('Adhoc: Getting label')
             for dt in self.config['report_date']:
                 logger.info(f'Prepare getting label {dt}')
-                data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'],overwrite_tmp_file=self.config['overwrite_tmp_file'])
+                data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'], overwrite_tmp_file=self.config['overwrite_tmp_file'])
                 data_handler.get_label()
+        elif self.config['task'] == 'validate_local_data':
+            logger.info('Adhoc: Validate local data')
+            for dt in self.config['report_date']:
+                logger.info(f'Validating local data {dt}')
+                data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'], overwrite_tmp_file=self.config['overwrite_tmp_file'])
+                val_obj = LocalDataValidator(data_handler)
+                val_obj.validate()
         else:
             logger.warn(f'{self.config["task"]} task is unimplemented')
