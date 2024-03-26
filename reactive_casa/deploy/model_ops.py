@@ -46,20 +46,27 @@ class Trainer:
         
         num1feat_cols = [
             'CASA_HOLD',
-            'CARD_CREDIT_HOLD',
-            'EB_SACOMPAY_HOLD',
-            'EB_MBIB_HOLD']
+            ]
         num2feat_cols = [
             'LOR',
             'CREDIT_SCORE',
             'CASA_BAL_SUM_NOW',
+            'CASA_BAL_SUM_36M',
+            'CASA_BAL_SUM_24M',
+            'CASA_BAL_SUM_12M',
+            'CASA_BAL_MAX_12M',
+            'CASA_TXN_AMT_SUM_36M',
+            'CASA_TXN_AMT_SUM_24M',
+            'CASA_TXN_AMT_SUM_12M',
+            'CASA_TXN_CT_36M',
+            'CASA_TXN_CT_24M',
+            'CASA_TXN_CT_12M',
+            'CASA_ACCT_CT_36M',
+            'CASA_ACCT_ACTIVE_CT_12M',
             'CASA_DAY_SINCE_LAST_TXN_CT_36M',
-            'CARD_CREDIT_MAX_LIMIT',
-            'CARD_CREDIT_SUM_BAL_NOW',
-            'EB_SACOMPAY_DAY_SINCE_LTST_LOGIN',
-            'EB_SACOMPAY_DAY_SINCE_LTST_TXN',
-            'EB_MBIB_DAY_SINCE_ACTIVE']
-        catfeat_cols = ['LIFE_STG', 'AREA']
+            ]
+
+        catfeat_cols = ['AREA','PROFESSION','GEN_GRP','LIFE_STG']
         
         # Pipeline + Model
         num1_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='constant', fill_value=0))])

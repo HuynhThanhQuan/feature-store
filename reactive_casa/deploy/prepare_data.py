@@ -59,7 +59,7 @@ class DataHandler:
             if (not self.reload_local_file) or (not os.path.exists(self.report_date_loc / raw_nm)):
                 logger.debug(f'Downloading raw-data {raw_nm}')
                 util.download_to_parquet(self.report_date_loc / raw_nm, 
-                                        sql_template.QUERY_RAW_DATA_FROM_FEATURE_STORE % (self.report_date_tbl, self.report_date, raw_nm))
+                                        sql_template.QUERY_RAW_DATA_FROM_FEATURE_STORE % (self.report_date_tbl, self.report_date_tbl, self.report_date, raw_nm))
             
     def merge_raw_feature_data(self):
         """
@@ -122,7 +122,7 @@ class DataHandler:
             # Download reactivated label
             logger.info(f'Prepare loading REACTIVATE LABEL of {self.report_date}')
             label = util.download_or_reload(self.report_date_loc / constant.LABEL, 
-                                         sql_template.QUERY_RAW_DATA_FROM_FEATURE_STORE % (self.report_date_tbl, self.report_date, constant.LABEL),
+                                         sql_template.QUERY_RAW_DATA_FROM_FEATURE_STORE % (self.report_date_tbl, self.report_date_tbl, self.report_date, constant.LABEL),
                                          reload_local_file = self.reload_local_file)
             if label is not None and (len(label) == 0):
                 if invalid_data=='raise':
@@ -147,7 +147,7 @@ class DataHandler:
         logger.info(f'Prepare loading label of {self.report_date}')
         if (not self.reload_local_file) or (not os.path.exists(self.label_fp)):
             label = util.download_or_reload(self.report_date_loc / constant.LABEL, 
-                                            sql_template.QUERY_RAW_DATA_FROM_FEATURE_STORE % (self.report_date_tbl, self.report_date, constant.LABEL),
+                                            sql_template.QUERY_RAW_DATA_FROM_FEATURE_STORE % (self.report_date_tbl, self.report_date_tbl, self.report_date, constant.LABEL),
                                             reload_local_file = self.reload_local_file)
             return label
         else:
