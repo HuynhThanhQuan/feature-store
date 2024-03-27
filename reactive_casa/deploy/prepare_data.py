@@ -126,7 +126,7 @@ class DataHandler:
                                          reload_local_file = self.reload_local_file)
             if label is not None and (len(label) == 0):
                 if invalid_data=='raise':
-                    raise Exception('REACTIVATED label not found or not qualified')
+                    raise Exception('REACTIVATED CASA label not found or not qualified')
                 else:
                     return 
             label = label[['CUSTOMER_CDE', 'FTR_VAL']]
@@ -151,4 +151,4 @@ class DataHandler:
                                             reload_local_file = self.reload_local_file)
             return label
         else:
-            return pd.read_parquet(self.label_fp)
+            return util.reload(self.label_fp)
