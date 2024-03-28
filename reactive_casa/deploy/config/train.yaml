@@ -11,8 +11,8 @@ backtest:
     # - 01-07-2023
     # - 01-08-2023
     - 01-09-2023
-    - 01-10-2023
-    - 01-11-2023
-    - 01-12-2023
+    # - 01-10-2023
+    # - 01-11-2023
+    # - 01-12-2023
 model: 'XGBoost'
 model_path: './model/pipeline_xgboost_casa_forward_12mob_test'
