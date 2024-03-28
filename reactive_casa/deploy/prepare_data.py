@@ -117,7 +117,7 @@ class DataHandler:
         """
         Get data and label
         """
-        if (not self.reload_local_file) or (not os.path.exists(self.data_label_fp) or (self.overwrite_tmp_file)):
+        if (not self.reload_local_file) or (not os.path.exists(self.data_label_fp)) or (self.overwrite_tmp_file):
             data = self.get_formatted_raw_feature_data()
             # Download reactivated label
             logger.info(f'Prepare loading REACTIVATE LABEL of {self.report_date}')

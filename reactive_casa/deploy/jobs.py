@@ -36,7 +36,7 @@ class ReactiveJobHandler:
         def prepare_dataset(dataset_dates):
             df = None
             for d in dataset_dates:
-                data_handler = DataHandler(d, reload_local_file=self.config['reload_local_file'])
+                data_handler = DataHandler(d, reload_local_file=self.config['reload_local_file'], overwrite_tmp_file=self.config['overwrite_tmp_file'])
                 data_label = data_handler.get_data_label()
                 if df is None:
                     df = data_label

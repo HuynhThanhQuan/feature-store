@@ -48,6 +48,7 @@ class Trainer:
             'CASA_HOLD',
             ]
         num2feat_cols = [
+            'AGE',
             'LOR',
             'CREDIT_SCORE',
             'CASA_BAL_SUM_NOW',
@@ -58,7 +59,7 @@ class Trainer:
             'CASA_TXN_AMT_SUM_36M',
             'CASA_TXN_AMT_SUM_24M',
             'CASA_TXN_AMT_SUM_12M',
-            'CASA_TXN_CT_36M',
+            # 'CASA_TXN_CT_36M',
             'CASA_TXN_CT_24M',
             'CASA_TXN_CT_12M',
             'CASA_ACCT_CT_36M',
