@@ -60,7 +60,7 @@ class Trainer:
             'CASA_TXN_AMT_SUM_24M',
             'CASA_TXN_AMT_SUM_12M',
             # 'CASA_TXN_CT_36M',
-            'CASA_TXN_CT_24M',
+            # 'CASA_TXN_CT_24M',
             'CASA_TXN_CT_12M',
             'CASA_ACCT_CT_36M',
             'CASA_ACCT_ACTIVE_CT_12M',
