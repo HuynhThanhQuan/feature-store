@@ -51,10 +51,11 @@ if __name__ == "__main__":
         description='Reactive ML system to train/test/serve and some util tasks',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter)
     parser.add_argument('job', type=str, choices=['train', 'test', 'serve', 'adhoc'], help="""Select job train/test/serve/adhoc base config file""")
+    parser.add_argument('--task', type=str, help="""Select adhoc task""")
     parser.add_argument('--log', choices=['DEBUG','INFO', 'WARNING', 'ERROR', 'CRITICAL'], default='INFO', help='Set the logging level')
     parser.add_argument('--batch_size', type=int, default=100000, help='Batch size for push prediction data to DW')
     parser.add_argument('--reload_local_file', action='store_true', help='Option to reload local file')
-    parser.add_argument('--update_data', dest='reload_local_file', action='store_false', help='Update data')
+    parser.add_argument('--update_data', dest='reload_local_file', action='store_false', help='Download raw feature data')
     parser.add_argument('--overwrite_tmp_file', action='store_true', help='Overwrite temp data')
     parser.set_defaults(reload_local_file=True)
     parser.set_defaults(overwrite_tmp_file=False)

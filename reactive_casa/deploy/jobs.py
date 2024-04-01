@@ -117,5 +117,14 @@ class ReactiveJobHandler:
                 data_handler = DataHandler(dt, reload_local_file=self.config['reload_local_file'], overwrite_tmp_file=self.config['overwrite_tmp_file'])
                 val_obj = LocalDataValidator(data_handler)
                 val_obj.validate()
+        elif self.config['task'] == 'download_data_label':
+            logger.info('Adhoc: Download data label')
+            for dt in self.config['report_date']:
+                try:
+                    logger.info(f'Download data {dt}')
+                    data_handler = DataHandler(dt, reload_local_file=False, overwrite_tmp_file=True)
+                    data_label = data_handler.get_data_label()
+                except Exception as e:
+                    logger.error(f'Failed to download data {dt}')
         else:
             logger.warn(f'{self.config["task"]} task is unimplemented')

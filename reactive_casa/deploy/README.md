@@ -29,10 +29,6 @@ A step-by-step series of examples that tell you how to get a development environ
    git clone https://github.com/yourusername/reactive-modeling.git
 2. Navigate to the project directory
    cd reactive-modeling
-3. Install dependencies
-   npm install
-4. Run the application
-   npm start
 ```
 
 ## Usage
