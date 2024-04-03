@@ -127,8 +127,6 @@ class DataHandler:
             if label is not None and (len(label) == 0):
                 if invalid_data=='raise':
                     raise Exception('REACTIVATED CASA label not found or not qualified')
-                else:
-                    return 
             label = label[['CUSTOMER_CDE', 'FTR_VAL']]
             label.columns = ['CUSTOMER_CDE', constant.LABEL]
             label = label.set_index('CUSTOMER_CDE')

@@ -8,7 +8,7 @@ from prepare_data import DataHandler
 from model_ops import Trainer, Predictor
 import preprocessor
 import database_jobs
-from validator import LocalDataValidator
+from validator import LocalDataValidator, DataWareHouseValidator
 
 import logging
 logger = logging.getLogger(__name__) 
@@ -126,5 +126,9 @@ class ReactiveJobHandler:
                     data_label = data_handler.get_data_label()
                 except Exception as e:
                     logger.error(f'Failed to download data {dt}')
+        elif self.config['task'] == 'validate_datawarehouse':
+            logger.info('Adhoc: Validate DataWarehouse')
+            val_obj = DataWareHouseValidator(self.config['report_date'])
+            val_obj.run()
         else:
             logger.warn(f'{self.config["task"]} task is unimplemented')

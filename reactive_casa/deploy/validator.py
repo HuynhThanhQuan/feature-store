@@ -61,3 +61,12 @@ class LocalDataValidator:
                 raw_feat_fp = self.data_handler.report_date_loc / raw_nm
                 os.remove(raw_feat_fp)
                 logger.warning(f'Removed Invalid data {raw_feat_fp}')
+
+
+class DataWareHouseValidator:
+    def __init__(self, report_dates):
+        self.report_dates=report_dates
+        
+    def run(self):
+        # Unimplemented
+        pass
