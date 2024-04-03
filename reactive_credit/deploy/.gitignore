@@ -1,0 +1,15 @@
+.git-credentials
+**/.ipynb_checkpoints
+**/__pycache__
+**/log/**
+**/metadata/**
+**/output/**
+**.tar
+**.pkl
+model/
+feature_store\adhoc\analyse-db\DW_ANALYTICS\img
+**.tar.gz
+data/
+log/
+out/
+
