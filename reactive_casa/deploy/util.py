@@ -19,7 +19,8 @@ def download_or_reload(saved_fn, query, reload_local_file=True):
     
 def download_to_parquet(saved_fn, query):
     df = load_sql_to_dataframe(query)
-    df.to_parquet(saved_fn)
+    if len(df)>0:
+        df.to_parquet(saved_fn)
     return df
 
 
