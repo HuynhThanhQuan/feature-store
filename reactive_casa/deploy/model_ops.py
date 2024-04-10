@@ -1,12 +1,13 @@
 import pathlib
 import os
 import pickle
+import numpy as np
 
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, FunctionTransformer
 from sklearn import metrics
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -45,33 +46,41 @@ class Trainer:
         assert 'train' in self.data_dict.keys(), 'Not found train dataset '
         
         num1feat_cols = [
-            'CASA_HOLD',
+            'CASA_BAL_SUM_LATEST',
+            'LOAN_SUM_LATEST',
+            'CASA_BAL_SUM_36M',
+            'CASA_TXN_AMT_SUM_36M',
             ]
         num2feat_cols = [
             'AGE',
             'LOR',
             'CREDIT_SCORE',
-            'CASA_BAL_SUM_NOW',
-            'CASA_BAL_SUM_36M',
-            'CASA_BAL_SUM_24M',
-            'CASA_BAL_SUM_12M',
-            'CASA_BAL_MAX_12M',
-            'CASA_TXN_AMT_SUM_36M',
-            'CASA_TXN_AMT_SUM_24M',
-            'CASA_TXN_AMT_SUM_12M',
+            # 'CASA_BAL_SUM_NOW',
+            # 'CASA_BAL_SUM_24M',
+            # 'CASA_BAL_SUM_12M',
+            # 'CASA_BAL_MAX_12M',
+            # 'CASA_TXN_AMT_SUM_24M',
+            # 'CASA_TXN_AMT_SUM_12M',
             # 'CASA_TXN_CT_36M',
             # 'CASA_TXN_CT_24M',
-            'CASA_TXN_CT_12M',
-            'CASA_ACCT_CT_36M',
-            'CASA_ACCT_ACTIVE_CT_12M',
-            'CASA_DAY_SINCE_LAST_TXN_CT_36M',
+            # 'CASA_TXN_CT_12M',
+            # 'CASA_ACCT_CT_36M',
+            # 'CASA_ACCT_ACTIVE_CT_12M',
+            # 'CASA_DAY_SINCE_LAST_TXN_CT_36M',
             ]
 
         catfeat_cols = ['AREA','PROFESSION','GEN_GRP','LIFE_STG']
         
         # Pipeline + Model
-        num1_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='constant', fill_value=0))])
-        num2_transformer = Pipeline(steps=[('imputer', SimpleImputer(strategy='median')), ('scaler', StandardScaler())])
+        num1_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='constant', fill_value=1)), 
+            ('log_tf', FunctionTransformer(func=np.log1p, feature_names_out='one-to-one')), 
+            ('scaler', StandardScaler())
+        ])
+        num2_transformer = Pipeline(steps=[
+            ('imputer', SimpleImputer(strategy='median')), 
+            # ('scaler', StandardScaler())
+        ])
         categorical_transformer = Pipeline(steps=[('encoder', OneHotEncoder(handle_unknown='ignore'))])
         transformer = ColumnTransformer(
             transformers=[

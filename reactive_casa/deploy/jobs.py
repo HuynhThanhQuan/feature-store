@@ -82,6 +82,7 @@ class ReactiveJobHandler:
                 'CUSTOMER_CDE': data.index,
                 'SCORE': score, 
             })
+            score_df['SCORE'] = score_df['SCORE'].astype(float)
             # Sorting in probability descending
             logger.info('Sorting best customer')
             score_df = score_df.sort_values(by='SCORE', ascending=False).reset_index(drop=True)

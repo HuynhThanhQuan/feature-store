@@ -2,8 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 
-from sqlalchemy import create_engine
-
 import sql_template
 from database_connector import oraDB
 
