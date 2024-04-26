@@ -86,6 +86,7 @@ class ReactiveJobHandler:
             # Sorting in probability descending
             logger.info('Sorting best customer')
             score_df = score_df.sort_values(by='SCORE', ascending=False).reset_index(drop=True)
+            score_df['RANK'] = score_df.index.tolist()
             score_fn = data_handler.score_fp
             score_df.to_parquet(score_fn)
             logger.info(f'Stored data at {score_fn}')
